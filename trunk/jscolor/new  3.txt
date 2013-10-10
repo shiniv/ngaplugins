@@ -1,0 +1,54 @@
+1.1  1.2  1.3  1.4
+2.1  2.2  2.3  2.4
+帖子浏览页第一行颜色为主题列表第二行，第二行为主题列表第一行
+快速回复区背景色=第一行第二列的背景色
+.nga_plug_tab   应不设置背景色以保持背景色一致
+.nga_plug_tab_main  背景色应和nga_plug_tab_menu_open保持一致
+.nga_plug_tab_menu_open
+.nga_plug_tab_menu_close
+<style>
+#_178NavAll_110906_765453{display:none}  /*去除导航条*/
+#custombg{display:none}  /*去除自定义背景*/
+#mainmenu{margin:0px;}   /*去除了自定义背景后需要使用这个以清除用户头像和版面链接之间的间距*/
+.cpinfo{display:none;}    /*去除底部申明*/
+
+body {background:#CCE8CC;}   /*body背景*/
+.catenew{background:#CCE8CC;}   /*子版块主背景色*/
+.urltip, .urltip2 {background: #CCE8CC;}  /*浮动用户信息背景色*/
+#indexBlock3 .catenew, #indexBlock3 .catenew .b2{background-color:#CCE8CC}  /*暗黑区主背景色*/
+
+.catenew .b2 {background-color: #CCE8CC;}  /*子版块表格色1*/
+.catenew .b3 {background-color: #BCD8BC;}  /*子版块表格色2 主界面板块表格色1*/
+.catenew .b4 {background-color: #CCE8CC;}  /*子版块表格色3 主界面板块表格色2*/
+
+#indexBlock3 .catenew .b3{background-color:#CCE8CC}  /*暗黑区表格色1*/
+#indexBlock3 .catenew .b4{background-color:#BCD8BC}  /*暗黑区表格色2*/
+
+
+.forumbox .row1 .c1 {background-color: #CCE8CC;}  /*1.1*/
+.forumbox .row1 .c2 {background-color: #BCD8BC;}  /*1.2*/
+.forumbox .row1 .c3_ {background-color: #CCE8CC;}  /*1.3*/
+.forumbox .row1 .c4_ {background-color: #BCD8BC;}  /*1.4*/
+.forumbox .row2 .c1 {background-color: #BCD8BC;}  /*2.1*/
+.forumbox .row2 .c2 {background-color: #CCE8CC;}  /*2.2*/
+.forumbox .row2 .c3_ {background-color: #BCD8BC;}  /*2.3*/
+.forumbox .row2 .c4_ {background-color: #CCE8CC;}  /*2.4*/
+
+.nga_plug_table {background-color: #CCE8CC;}
+.nga_plug_tab_main {background-color: #CCE8CC;}
+.nga_plug_tab_menu_open {background-color: #CCE8CC;}
+.nga_plug_tab_menu_close {background-color: #BCD8BC;}
+</style>
+
+var a = "ffffff"
+for (var i=0;i<3;i++){
+	if (a.substr(i*2,1).toLowerCase() == "a"){
+		a = a.substr(0,(i*2)) + "9" + a.substr(i*2+1)
+	}else if(a.substr(i*2,1) == "0"){
+		a = a.substr(0,(i*2)) + "00" + a.substr((i+1)*2)
+	}else if(isNaN(a.substr(i*2,1))){
+		a = a.substr(0,(i*2)) + String.fromCharCode(a.substr(i*2,1).charCodeAt() - 1) + a.substr(i*2+1)
+	}else{
+		a = a.substr(0,(i*2)) + (parseInt(a.substr(i*2,1)) - 1) + a.substr(i*2+1)
+	}
+}
