@@ -116,7 +116,7 @@
 }
 
 
-.ngaplug_heibenzi > span:nth-child(2) > div {display:none;background-image: url('https://ngaplugins.googlecode.com/svn/trunk/bl.png');width:12px;height:12px;margin-left:2px;}
+.ngaplug_heibenzi > span:nth-child(2) > div {display:none;background-image: url('http://ngaplugins.googlecode.com/svn/trunk/bl.png');width:12px;height:12px;margin-left:2px;}
 .ngaplug_heibenzi:hover > span:nth-child(2) > div {display:inline-block!important;}
 .ngaplug_heibenzi > span:nth-child(2) > div:nth-of-type(1) {background-position: -12px 0;margin-left:10px;}
 .ngaplug_heibenzi {visibility: hidden;}

@@ -64,7 +64,7 @@ function varietynga_Initialization(){
 	
 	var x = document.createElement('style');
 	var h = document.getElementsByTagName('head')[0];
-	x.innerHTML = ".varietynga_cur_zin{cursor: url(https://ngaplugins.googlecode.com/svn/trunk/img/cur_zin.cur) 14 14,pointer;}.varietynga_cur_zout{cursor: url(https://ngaplugins.googlecode.com/svn/trunk/img/cur_zout.cur) 14 14,pointer;}";
+	x.innerHTML = ".varietynga_cur_zin{cursor: url(http://ngaplugins.googlecode.com/svn/trunk/img/cur_zin.cur) 14 14,pointer;}.varietynga_cur_zout{cursor: url(http://ngaplugins.googlecode.com/svn/trunk/img/cur_zout.cur) 14 14,pointer;}";
 	h.insertBefore(x,h.firstChild);
 	
 	if (location.pathname != "/thread.php" && location.pathname != "/read.php") return;
@@ -230,7 +230,7 @@ var elimg = document.getElementById(arg).parentNode.getElementsByTagName("img")[
 		return;
 	}else{
 		//elimg.parentNode.removeChild(elimg);
-		elimg.src = "https://ngaplugins.googlecode.com/svn/trunk/img/yes.png";
+		elimg.src = "http://ngaplugins.googlecode.com/svn/trunk/img/yes.png";
 		elimg.title = "该帖有图片。";
 		for(var i=0;i<postimg.length;i++){
 			if (postimg[i].substr(0,1) == "."){
@@ -530,10 +530,10 @@ function varietynga_img(){
 			ts.left = nga_plug_elementLeft(timg[i]) + "px";
 			ts.innerHTML = "<div style='position: absolute;z-index:999'>\r\
 				<div onclick='event.cancelBubble = true;varietynga_imgclick(this.parentNode.parentNode,\"l\");return false;' title='左转' \
-				style='display: inline-block; background-image: url(https://ngaplugins.googlecode.com/svn/trunk/img/left.gif); \
+				style='display: inline-block; background-image: url(http://ngaplugins.googlecode.com/svn/trunk/img/left.gif); \
 				height: 16px; width: 16px; border:1px solid #777777; background-position: initial initial; background-repeat: initial initial;'></div>\r\
 				<div onclick='event.cancelBubble = true;varietynga_imgclick(this.parentNode.parentNode,\"r\");return false;' title='右转' \
-				style='display: inline-block; background-image: url(https://ngaplugins.googlecode.com/svn/trunk/img/right.gif); \
+				style='display: inline-block; background-image: url(http://ngaplugins.googlecode.com/svn/trunk/img/right.gif); \
 				height: 16px; width: 16px; border:1px solid #777777;background-position: initial initial; background-repeat: initial initial;'></div>\
 				</div>";
 			timg[i].parentNode.insertBefore(ts,timg[i]);
