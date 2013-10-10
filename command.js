@@ -5,6 +5,7 @@
 var nga_plug_control_table_s = [];
 var nga_plug_control_version = "2.0";
 loader.css("https://ngaplugins.googlecode.com/svn/trunk/css.css");  //加载CSS
+var nga_plug_varietynga_reload = [];  //存储百变NGA，加载后一页时需要执行的函数  用法： nga_plug_varietynga_reload.push("xxxx")   xxxx为需要执行的函数
 //全局函数：给一个有ID的元素绑定事件以使点击该元素外的区域隐藏该元素
 //注意：需要在弹出菜单的触发链接或者按钮的onclick里面加  event.cancelBubble = true;   这是禁止冒泡的语句，如果该链接或者按钮需要点击后触父元素的某些事件请勿使用该方法
 //不加上面的语句会使弹出窗口永远不能显示
@@ -422,7 +423,7 @@ function nga_plug_control_create(msg){
 					<td>\
 						<div class="nga_plug_table_right_div">';
 		var x = new nga_plug_tab();
-		x.add("关于",'<div class=\'nga_plug_table_tab_div\'>插件名：NGA插件设置中心<br>作者：LinTx<br>修改：onlyforxuan<br>版本：'+nga_plug_control_version+'<br><a class="green" href="http://bbs.ngacn.cc/read.php?tid=5627431" target="_blank">参与讨论</a><br><br><span style="font-size:24px;">由于L大离开NGA，我来接手代码的维护工作，暂时只会进行一些现有功能的修复</span></div>');
+		x.add("关于",'<div class=\'nga_plug_table_tab_div\'>插件名：NGA插件设置中心<br>作者：LinTx<br>维护：onlyforxuan、LinTx<br>版本：'+nga_plug_control_version+'<br><a class="green" href="http://bbs.ngacn.cc/read.php?tid=5627431" target="_blank">参与讨论</a></div>');
 		x.add("插件控制","<div class='nga_plug_table_tab_div'>"+nga_plug_control_getplugmanhtml()+"</div>");
 		x.add("配置管理",'<div class="nga_plug_table_tab_div">\
 			<textarea id="nga_plug_setting_text" style="width: 625px; height: 313px; margin: 0px; "></textarea>\

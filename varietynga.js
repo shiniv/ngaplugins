@@ -151,8 +151,11 @@ function varietynga_weibo(html,arg){
 				}
 			}
 		}
-		setTimeout('try{Backlist_bl()}catch(e){};',3000); //调用添加屏蔽链接模块   暂行办法
-		setTimeout('try{if (varietynga_setting.data.set.img) varietynga_img();}catch(e){}',3000) //加载图片旋转功能
+		for (var i=0;i<nga_plug_varietynga_reload.length;i++){
+			setTimeout('try{'+nga_plug_varietynga_reload[i]+'}catch(e){}',3000);
+		}
+		//setTimeout('try{Backlist_bl()}catch(e){};',3000); //调用添加屏蔽链接模块   暂行办法
+		//setTimeout('try{if (varietynga_setting.data.set.img) varietynga_img();}catch(e){}',3000) //加载图片旋转功能
 	}
 	function nload(html,arg){
 		var x = document.createElement('div');
@@ -510,6 +513,7 @@ var s = "";
 
 //图片旋转
 function varietynga_img(){
+	nga_plug_varietynga_reload.push("varietynga_img();");   //添加到自动加载的自动运行中以在后几页也能实现图片旋转
 	var timg = document.getElementById("m_posts_c").getElementsByTagName("img");
 	for (var i=0;i<timg.length;i++){
 		if (checkimg(timg[i])){
@@ -554,12 +558,13 @@ function varietynga_img(){
 	}
 	
 	function checkimg(img){
-		if (img.parentNode.className=="varietyngas") return false
+		if(img.parentNode.className=="varietyngas") return false
+		if(img.parentNode.className=="posterinfo") return false
 		if(img.parentNode.getAttribute("name")=="portrait") return false
 		if(img.parentNode.getAttribute("name")=="medal") return false
 		if(img.parentNode.parentNode.getAttribute("name")=="money") return false
-		if (img.src == "about:blank") return false
-		if (JSON.stringify(nga_plug_mojo).toLowerCase().indexOf(img.src.toLowerCase()) >= 0) return false
+		if(img.src == "about:blank") return false
+		if(JSON.stringify(nga_plug_mojo).toLowerCase().indexOf(img.src.toLowerCase()) >= 0) return false
 		//var width = img.offsetWidth || img.width
 		//var height = img.offsetHeight ||img.height
 		//if (width < 200 && height < 200) return false

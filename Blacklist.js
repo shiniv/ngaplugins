@@ -28,6 +28,7 @@ function Blacklist_Initialization(){
 	nga_plug_table_addTab("黑名单",t);
 	
 	Backlist_bl() //添加屏蔽链接、移除已屏蔽用户发表的回复、主题
+	nga_plug_varietynga_reload.push("Backlist_bl()");   //添加到自动加载的自动运行中以在后几页也能屏蔽
 	
 	function c(p){
 		if (p) return "checked"; else return "";
