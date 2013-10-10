@@ -139,7 +139,12 @@ function varietynga_weibo(html,arg){
 	            thtml = /<table[\s\S]+?<\/table>[\s\S]+?(<table[\s\S]+<\/table>)/.exec(thtml)[1];
 	            var x = document.createElement('div');
 	            x.innerHTML = thtml;
-	            document.getElementById("m_posts_c").appendChild(x);
+				for(var n=x.firstChild; n!=null; n=n.nextSibling){
+					//document.getElementById("m_posts_c").insertBefore(n,document.getElementById("m_posts_c").lastChild)
+					document.getElementById("m_posts_c").appendChild(n);
+					//if(n.nodeType==1 && n.tagName.toLowerCase()=="table") tabs.push(n);
+				}
+	            //document.getElementById("m_posts_c").appendChild(x);
 	        }
 	    }
 		if (/<script>([\s\S]*?)<\/script>/gi.test(html)){    //附件处理
