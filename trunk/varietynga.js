@@ -38,7 +38,7 @@ String.prototype.colorHex = function(){
 };
 
 function varietynga_Initialization(){
-	nga_plug_addmsg("varietynga","百变NGA","修复帖子列表页图片不能显示的BUG。");
+	nga_plug_addmsg("varietynga","百变NGA","由于贴吧模式会大量消耗NGA服务器资源，现暂停使用。");
 	
 	varietynga_setting.load();
 	varietynga_setting.data = varietynga_setting.data || {set:{tieba:true,weibo:true,img:true}};
@@ -50,8 +50,10 @@ function varietynga_Initialization(){
 	varietynga_css();
 	
 	var e = new nga_plug_tab();
-	e.add("总体设置",'<input onclick="varietynga_setting.data.set.tieba=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.tieba)+'>启用主题图片预览（贴吧风格）<br>\
-		<input onclick="varietynga_setting.data.set.weibo=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.weibo)+'>启用帖子即时加载（腾讯微博风格）<br>\
+	//e.add("总体设置",'<input onclick="varietynga_setting.data.set.tieba=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.tieba)+'>启用主题图片预览（贴吧风格）<br>\
+	//	<input onclick="varietynga_setting.data.set.weibo=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.weibo)+'>启用帖子即时加载（腾讯微博风格）<br>\
+	//	<input onclick="varietynga_setting.data.set.img=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.img)+'>启用图片旋转功能>');
+	e.add("总体设置",'<input onclick="varietynga_setting.data.set.weibo=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.weibo)+'>启用帖子即时加载（腾讯微博风格）<br>\
 		<input onclick="varietynga_setting.data.set.img=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.img)+'>启用图片旋转功能>');
 	e.add("界面设置",varietynga_setthtml());
 	var t = e.gethtml();
@@ -67,17 +69,20 @@ function varietynga_Initialization(){
 	
 	if (location.pathname != "/thread.php" && location.pathname != "/read.php") return;
 	if (location.search.indexOf("authorid") >= 0 && location.pathname == "/thread.php") return;
-	if (varietynga_setting.data.set.img) try{varietynga_img()}catch(e){}; //加载图片旋转功能
+	if (varietynga_setting.data.set.img){
+		try{varietynga_img()}catch(e){}; //加载图片旋转功能
+		nga_plug_varietynga_reload.push("varietynga_img();");   //添加到自动加载的自动运行中以在后几页也能实现图片旋转
+	}
 	if (location.pathname == "/thread.php"){
-		if (varietynga_setting.data.set.tieba){
-			for (var i=0;i<35;i++){
-				var ti = document.getElementById("t_tt"+i);
-				new nga_plug_XMLHttp(ti.href,varietynga_tieba,"t_tt"+i);
-				var x = document.createElement('span');
-				x.innerHTML = "<img title='正在获取该主题的图片' src='http://lintxinclude.googlecode.com/files/progressIndicator16x16.gif'>";
-				ti.parentNode.appendChild(x);
-			}
-		}
+		//if (varietynga_setting.data.set.tieba){
+		//	for (var i=0;i<35;i++){
+		//		var ti = document.getElementById("t_tt"+i);
+		//		new nga_plug_XMLHttp(ti.href,varietynga_tieba,"t_tt"+i);
+		//		var x = document.createElement('span');
+		//		x.innerHTML = "<img title='正在获取该主题的图片' src='http://lintxinclude.googlecode.com/files/progressIndicator16x16.gif'>";
+		//		ti.parentNode.appendChild(x);
+		//	}
+		//}
 	}else if(location.pathname == "/read.php" && document.URL.indexOf("page=e#a") < 0){
 		if (location.search.indexOf("pid=") >= 0) return;
 		if (varietynga_setting.data.set.weibo){
@@ -515,7 +520,6 @@ var s = "";
 
 //图片旋转
 function varietynga_img(){
-	nga_plug_varietynga_reload.push("varietynga_img();");   //添加到自动加载的自动运行中以在后几页也能实现图片旋转
 	var timg = document.getElementById("m_posts_c").getElementsByTagName("img");
 	for (var i=0;i<timg.length;i++){
 		if (checkimg(timg[i])){

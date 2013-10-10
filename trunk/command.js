@@ -697,10 +697,10 @@ function nga_plug_control_Initialization(){
 	nga_plug_msg.data = nga_plug_msg.data || [];
 	
 	//创建打开本插件设置的链接
-	var nga_plug_control_t_link = document.getElementById("mainmenu").getElementsByTagName("td");
-	var nga_plug_control_link_td = document.createElement("td");
-	var nga_plug_control_link = document.createElement("a");
-	nga_plug_control_link.href="javascript:void(0)";
+	//var nga_plug_control_t_link = document.getElementById("mainmenu").getElementsByTagName("td");
+	//var nga_plug_control_link_td = document.createElement("td");
+	//var nga_plug_control_link = document.createElement("a");
+	//nga_plug_control_link.href="javascript:void(0)";
 	var newmsg = false;
 	if (nga_plug_msg.data.length > 0){
 		for (var i=0;i<nga_plug_msg.data.length;i++){
@@ -713,19 +713,20 @@ function nga_plug_control_Initialization(){
 			}
 		}
 	}
-	if (newmsg){
-		nga_plug_control_link.onclick=function(event){event.cancelBubble = true;nga_plug_control_create("newmsg");};
-	}else{
-		nga_plug_control_link.onclick=function(event){event.cancelBubble = true;nga_plug_control_create();};
-	}
-	nga_plug_control_link.className="rep gray txtbtnx b";
-	nga_plug_control_link.innerHTML="插件";
-	nga_plug_control_link_td.appendChild(nga_plug_control_link);
-	try{nga_plug_control_t_link[2].parentNode.insertBefore(nga_plug_control_link_td,nga_plug_control_t_link[2]);}catch(e){};
-	
+	//if (newmsg){
+	//	nga_plug_control_link.onclick=function(event){event.cancelBubble = true;nga_plug_control_create("newmsg");};
+	//}else{
+	//	nga_plug_control_link.onclick=function(event){event.cancelBubble = true;nga_plug_control_create();};
+	//}
+	//nga_plug_control_link.className="rep gray txtbtnx b";
+	//nga_plug_control_link.innerHTML="插件";
+	//nga_plug_control_link_td.appendChild(nga_plug_control_link);
+	//try{nga_plug_control_t_link[2].parentNode.insertBefore(nga_plug_control_link_td,nga_plug_control_t_link[2]);}catch(e){};
+	commonui.mainMenu.addItemOnTheFly("插件设置",null,function(event){nga_plug_control_create();})
+	if (newmsg) nga_plug_control_create("newmsg");
 	
 	//nga_plug_addmsg("nga_plug","NGA 插件设置中心","恭喜！\n插件安装成功，更多功能请点击上方的“关于”，然后点击下面的“参与讨论”链接。","install");
-	//nga_plug_addmsg("nga_plug","NGA 插件设置中心","增加那年那兔表情包，一共234个表情。");
+	nga_plug_addmsg("nga_plug","NGA 插件设置中心","设置菜单链接修改到“用户中心/左上角头像”-“论坛设置”-“插件设置”中。");
 	//nga_plug_addmsg("nga_plug","NGA 插件设置中心","修复微博风格显示帖子中，附件图片无法显示的bug");
 	nga_plug_addmsg("nga_plug","百变NGA","折叠按钮在内容展开之后不会消失，再次点击可以将内容重新折叠");
 	
