@@ -4,7 +4,7 @@
 // ================================================================================
 var nga_plug_control_table_s = [];
 var nga_plug_control_version = "2.0";
-loader.css("https://ngaplugins.googlecode.com/svn/trunk/css.css");  //加载CSS
+loader.css("http://ngaplugins.googlecode.com/svn/trunk/css.css");  //加载CSS
 var nga_plug_varietynga_reload = [];  //存储百变NGA，加载后一页时需要执行的函数  用法： nga_plug_varietynga_reload.push("xxxx")   xxxx为需要执行的函数
 //全局函数：给一个有ID的元素绑定事件以使点击该元素外的区域隐藏该元素
 //注意：需要在弹出菜单的触发链接或者按钮的onclick里面加  event.cancelBubble = true;   这是禁止冒泡的语句，如果该链接或者按钮需要点击后触父元素的某些事件请勿使用该方法
@@ -91,14 +91,14 @@ function nga_plug_XMLHttp(url,func,arg){
 	}
 	if(this.ajax!=null){
 		this.ajax.open("get",url,true);
-		this.ajax.onreadystatechange=httpStateChange;
+		this.ajax.onreadystatechange=httptateChange;
 		this.ajax.overrideMimeType("text/html;charset=gbk");
 		this.ajax.send(null);
 	}
 	this.func = func;
 	this.arg = arg;
 	var this_ = this;
-	function httpStateChange(){
+	function httptateChange(){
 		//当指定XMLHttpRequest为异步传输时(false),发生任何状态的变化，该对象都会调用onreadystatechange所指定的函数
 		if(this_.ajax.readyState == 4){  //XMLHttpRequest处理状态，4表示处理完毕
 			if(this_.ajax.status == 200){ //服务器响应的HTTP代码，200表示正常
@@ -643,15 +643,15 @@ var nga_plug_plugs = [
 {
 	id:"nga_edit",
 	title:'UBB编辑器',
-	src:"https://ngaplugins.googlecode.com/svn/trunk/editor/editor.js",
-	testsrc:"https://ngaplugins.googlecode.com/svn/trunk/editor/editor.test.js",
+	src:"http://ngaplugins.googlecode.com/svn/trunk/editor/editor.js",
+	testsrc:"http://ngaplugins.googlecode.com/svn/trunk/editor/editor.test.js",
 	charset:"UTF-8",
 	check:true
 },{
 	id:"Blacklist",
 	title:"黑名单插件",
-	src:"https://ngaplugins.googlecode.com/svn/trunk/Blacklist.js",
-	testsrc:"https://ngaplugins.googlecode.com/svn/trunk/Blacklist.test.js",
+	src:"http://ngaplugins.googlecode.com/svn/trunk/Blacklist.js",
+	testsrc:"http://ngaplugins.googlecode.com/svn/trunk/Blacklist.test.js",
 	charset:"UTF-8",
 	check:true
 },{
@@ -663,21 +663,21 @@ var nga_plug_plugs = [
 },{
 	id:"mojo_for_lintx",
 	title:"表情-LinTx",
-	src:"https://ngaplugins.googlecode.com/svn/trunk/mojo_for_lintx.js",
+	src:"http://ngaplugins.googlecode.com/svn/trunk/mojo_for_lintx.js",
 	charset:"UTF-8",
 	check:true
 },{
 	id:"othertools",
 	title:"小工具集合",
-	src:"https://ngaplugins.googlecode.com/svn/trunk/othertools.js",
-	testsrc:"https://ngaplugins.googlecode.com/svn/trunk/othertools.test.js",
+	src:"http://ngaplugins.googlecode.com/svn/trunk/othertools.js",
+	testsrc:"http://ngaplugins.googlecode.com/svn/trunk/othertools.test.js",
 	charset:"UTF-8",
 	check:true
 },{
 	id:"varietynga",
 	title:"百变NGA",
-	src:"https://ngaplugins.googlecode.com/svn/trunk/varietynga.js",
-	testsrc:"https://ngaplugins.googlecode.com/svn/trunk/varietynga.test.js",
+	src:"http://ngaplugins.googlecode.com/svn/trunk/varietynga.js",
+	testsrc:"http://ngaplugins.googlecode.com/svn/trunk/varietynga.test.js",
 	charset:"UTF-8",
 	check:true
 }
