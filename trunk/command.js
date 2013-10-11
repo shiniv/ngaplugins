@@ -1,4 +1,4 @@
- // ================================================================================
+// ================================================================================
 // NGA[艾泽拉斯国家地理论坛] 论坛增强插件   控制中心
 // 作者：LinTx
 // ================================================================================
@@ -706,7 +706,7 @@ function nga_plug_control_Initialization(){
 		for (var i=0;i<nga_plug_msg.data.length;i++){
 			for (var k=0;k<nga_plug_msg.data[i].msg.length;k++){
 				if (!nga_plug_msg.data[i].msg[k].read){
-				  // nga_plug_control_link.style.color= "sandyBrown";
+					// nga_plug_control_link.style.color= "sandyBrown";
 					//nga_plug_control_link.title="有插件升级了，点击查看升级内容。"
 					newmsg = true;
 				}
