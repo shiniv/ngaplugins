@@ -1,4 +1,4 @@
-var Blacklist_list = new nga_plug_local_data("Blacklist");
+﻿var Blacklist_list = new nga_plug_local_data("Blacklist");
 var Blacklist_delth = new nga_plug_local_data("Blacklist_delth");
 var Blacklist_hbz = new nga_plug_local_data("Blacklist_hbz");
 //var Blacklist_other = new nga_plug_local_data("Blacklist_other")
