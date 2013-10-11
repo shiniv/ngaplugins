@@ -701,18 +701,6 @@ function nga_plug_control_Initialization(){
 	//var nga_plug_control_link_td = document.createElement("td");
 	//var nga_plug_control_link = document.createElement("a");
 	//nga_plug_control_link.href="javascript:void(0)";
-	var newmsg = false;
-	if (nga_plug_msg.data.length > 0){
-		for (var i=0;i<nga_plug_msg.data.length;i++){
-			for (var k=0;k<nga_plug_msg.data[i].msg.length;k++){
-				if (!nga_plug_msg.data[i].msg[k].read){
-					// nga_plug_control_link.style.color= "sandyBrown";
-					//nga_plug_control_link.title="有插件升级了，点击查看升级内容。"
-					newmsg = true;
-				}
-			}
-		}
-	}
 	//if (newmsg){
 	//	nga_plug_control_link.onclick=function(event){event.cancelBubble = true;nga_plug_control_create("newmsg");};
 	//}else{
@@ -723,7 +711,6 @@ function nga_plug_control_Initialization(){
 	//nga_plug_control_link_td.appendChild(nga_plug_control_link);
 	//try{nga_plug_control_t_link[2].parentNode.insertBefore(nga_plug_control_link_td,nga_plug_control_t_link[2]);}catch(e){};
 	commonui.mainMenu.addItemOnTheFly("插件设置",null,function(event){nga_plug_control_create();})
-	if (newmsg) nga_plug_control_create("newmsg");
 	
 	//nga_plug_addmsg("nga_plug","NGA 插件设置中心","恭喜！\n插件安装成功，更多功能请点击上方的“关于”，然后点击下面的“参与讨论”链接。","install");
 	nga_plug_addmsg("nga_plug","NGA 插件设置中心","设置菜单链接修改到“用户中心/左上角头像”-“论坛设置”-“插件设置”中。");
@@ -775,6 +762,21 @@ function nga_plug_control_Initialization(){
 			}
 		}
 	}
+	
+	//升级提醒
+	var newmsg = false;
+	if (nga_plug_msg.data.length > 0){
+		for (var i=0;i<nga_plug_msg.data.length;i++){
+			for (var k=0;k<nga_plug_msg.data[i].msg.length;k++){
+				if (!nga_plug_msg.data[i].msg[k].read){
+					// nga_plug_control_link.style.color= "sandyBrown";
+					//nga_plug_control_link.title="有插件升级了，点击查看升级内容。"
+					newmsg = true;
+				}
+			}
+		}
+	}
+	if (newmsg) nga_plug_control_create("newmsg");
 }
 
 var nga_plug_control_isload = nga_plug_control_isload || false;
