@@ -141,15 +141,15 @@ nga_plug_local_data.prototype.load = function(){
 
 //  给控制台添加一个项目，调用方法：nga_plug_table_addTab(标题,项目HTML代码)
 function nga_plug_table_addTab(title,divhtml){
-	var ttable=document.getElementById("nga_plug_control_table");
-	if (ttable){
-		var ttd0=ttable.rows[1].cells[0];
-		var ttd1=ttable.rows[1].cells[1];
-		ttd0.getElementsByTagName("div")[0].innerHTML += '<span class="nga_plug_table_left_span" onclick="nga_plug_table_setTab(this)" onmouseover="this.style.background=\'#e5d5b0\'" onmouseout="this.style.background=\'\'">'+title+'</span>';
-		ttd1.innerHTML += '<div style="display:none" class="nga_plug_table_right_div">'+divhtml+'</div>'
-	}else{
+	//var ttable=document.getElementById("nga_plug_control_table");
+	//if (ttable){
+	//	var ttd0=ttable.rows[1].cells[0];
+	//	var ttd1=ttable.rows[1].cells[1];
+	//	ttd0.getElementsByTagName("div")[0].innerHTML += '<span class="nga_plug_table_left_span" onclick="nga_plug_table_setTab(this)" onmouseover="this.style.background=\'#e5d5b0\'" onmouseout="this.style.background=\'\'">'+title+'</span>';
+	//	ttd1.innerHTML += '<div style="display:none" class="nga_plug_table_right_div">'+divhtml+'</div>'
+	//}else{
 		nga_plug_control_table_s.push({title:'<span class="nga_plug_table_left_span" onclick="nga_plug_table_setTab(this)" onmouseover="this.style.background=\'#e5d5b0\'" onmouseout="this.style.background=\'\'">'+title+'</span>',html:'<div style="display:none" class="nga_plug_table_right_div">'+divhtml+'</div>'})
-	}
+	//}
 }//给控制台添加项目函数结束
 
 //设置导入导出模块，如果你的插件里面保存的本地数据是使用nga_plug_local_data方法保存，则可使用该方法以在插件设置中心中统一导入导出你的插件的设置
@@ -398,75 +398,46 @@ function nga_plug_table_setTab(obj){
 }
 
 //创建设置中心面板
-function nga_plug_control_create(msg){
-	if (document.getElementById('nga_plug_control')){
-		document.getElementById('nga_plug_control').style.display = document.getElementById('nga_plug_control').style.display == "block" ? "none":"block";
-	}else{
-		var tmpdiv = document.createElement("div");
-		tmpdiv.id = "nga_plug_control";
-		tmpdiv.className = "nga_plug_table";
-		var t_html = 	'<table style="width:800px;" cellspacing="0px" id="nga_plug_control_table">\
-				<tr>\
-					<td colspan="2" class="nga_plug_table_top">\
-					NGA插件设置中心<div class="right"><a href="javascript:void(0)" onclick="nga_plug_control_create()">关闭</a>&nbsp;</div>\
-					</td>\
-				</tr>\
-				<tr>\
-					<td class="nga_plug_table_left">\
-						<div class="nga_plug_table_left_div">\
-							<span class="nga_plug_table_left_div_span_hover" onclick="nga_plug_table_setTab(this)" onmouseover="this.style.background=\'#e5d5b0\'" onmouseout="this.style.background=\'\'">基本设置</span>';
-		for (var i=0;i<nga_plug_control_table_s.length;i++){
-			t_html += nga_plug_control_table_s[i].title;
-		}
-		t_html += '		</div>\
-					</td>\
-					<td>\
-						<div class="nga_plug_table_right_div">';
-		var x = new nga_plug_tab();
-		x.add("关于",'<div class=\'nga_plug_table_tab_div\'>插件名：NGA插件设置中心<br>作者：LinTx<br>维护：onlyforxuan、LinTx<br>版本：'+nga_plug_control_version+'<br><a class="green" href="http://bbs.ngacn.cc/read.php?tid=5627431" target="_blank">参与讨论</a></div>');
-		x.add("插件控制","<div class='nga_plug_table_tab_div'>"+nga_plug_control_getplugmanhtml()+"</div>");
-		x.add("配置管理",'<div class="nga_plug_table_tab_div">\
-			<textarea id="nga_plug_setting_text" style="width: 625px; height: 313px; margin: 0px; "></textarea>\
-			<input onclick="nga_plug_setting(\'ex\')" type="button" value="导出">\
-			<input onclick="nga_plug_setting(\'im\')" type="button" value="导入">\
-			<input onclick="nga_plug_setting(\'read\')" type="button" value="显示会导出的设置项">\
-			<span class="right"><a href="" onclick="nga_plug_setting(\'save\',this)">保存至本地</a>  从本地加载：<input type="file" style="width:120px;" onchange="nga_plug_setting(\'load\',this)"></span>\
-			<br><span>导出说明：点击“导出”按钮，把文本框中的内容复制并保存到你的电脑里面即可（你可以将你导出的设置分享给其他人使用）。\
-			<br>导入说明：把以前导出的内容或者其他人导出的内容输入进上面的文本框，然后点击“导入”按钮即可（导入会覆盖现在的设置，应用新的设置需要刷新页面）。</span>\
-			</div>');
-		var newmsg = false;
-		if (msg == "newmsg") newmsg = true;
-		var tt_html = '<div class="nga_plug_table_tab_div">';
-		if (!newmsg){
-			tt_html += '<span class="green">没有升级提示</span>';
-		}else{
-			tt_html += '<input type="button" onclick="nga_plug_readmsg()" value="全部标记为已读"><br>'
-			for (var i=0;i<nga_plug_msg.data.length;i++){
-				for (var k=0;k<nga_plug_msg.data[i].msg.length;k++){
-					if (!nga_plug_msg.data[i].msg[k].read){
-						tt_html += '<span class="green">'+nga_plug_msg.data[i].title+'</span><br><span>'+nga_plug_msg.data[i].msg[k].text+'</span><br><br>'
-					}
-				}
-			}
-		}
-		tt_html += '</div>'
-		x.add("升级提示",tt_html,newmsg);
-		t_html += x.gethtml();
-		t_html += '		</div>';
-		for (var i=0;i<nga_plug_control_table_s.length;i++){
-			t_html += nga_plug_control_table_s[i].html;
-		}
-		t_html += '	</td>\
-				</tr>\
-			</table>'
-		tmpdiv.innerHTML = t_html;
-		document.body.appendChild(tmpdiv);
-		nga_plug_HideDomOfClick('nga_plug_control');
-		document.getElementById('nga_plug_control').style.display = "block";
+function nga_plug_control_create(){
+	nga_plug_control._.addContent(null)
+	nga_plug_control._.addTitle('NGA插件设置中心');
+	var t_html = 	'<table style="width:800px;border: 1px solid #777;" cellspacing="0px" id="nga_plug_control_table">\
+			<tr>\
+				<td class="nga_plug_table_left">\
+					<div class="nga_plug_table_left_div">\
+						<span class="nga_plug_table_left_div_span_hover" onclick="nga_plug_table_setTab(this)" onmouseover="this.style.background=\'#e5d5b0\'" onmouseout="this.style.background=\'\'">基本设置</span>';
+	for (var i=0;i<nga_plug_control_table_s.length;i++){
+		t_html += nga_plug_control_table_s[i].title;
 	}
-	function c(p){
-		if (p) return "checked"; else return "";
+	t_html += '		</div>\
+				</td>\
+				<td>\
+					<div class="nga_plug_table_right_div">';
+	var x = new nga_plug_tab();
+	x.add("关于",'<div class=\'nga_plug_table_tab_div\'>插件名：NGA插件设置中心<br>作者：LinTx<br>维护：onlyforxuan、LinTx<br>版本：'+nga_plug_control_version+'<br>\
+		<a class="nav_link" href="http://bbs.ngacn.cc/read.php?tid=5627431" target="_blank">参与讨论</a>\
+		<a class="nav_link" href="javascript:void(0)" onclick="nga_newmsg(\'all\')">消息中心</a></div>');
+	x.add("插件控制","<div class='nga_plug_table_tab_div'>"+nga_plug_control_getplugmanhtml()+"</div>");
+	x.add("配置管理",'<div class="nga_plug_table_tab_div">\
+		<textarea id="nga_plug_setting_text" style="width: 625px; height: 313px; margin: 0px; "></textarea>\
+		<input onclick="nga_plug_setting(\'ex\')" type="button" value="导出">\
+		<input onclick="nga_plug_setting(\'im\')" type="button" value="导入">\
+		<input onclick="nga_plug_setting(\'read\')" type="button" value="显示会导出的设置项">\
+		<span class="right"><a href="" onclick="nga_plug_setting(\'save\',this)">保存至本地</a>  从本地加载：<input type="file" style="width:120px;" onchange="nga_plug_setting(\'load\',this)"></span>\
+		<br><span>导出说明：点击“导出”按钮，把文本框中的内容复制并保存到你的电脑里面即可（你可以将你导出的设置分享给其他人使用）。\
+		<br>导入说明：把以前导出的内容或者其他人导出的内容输入进上面的文本框，然后点击“导入”按钮即可（导入会覆盖现在的设置，应用新的设置需要刷新页面）。</span>\
+		</div>');
+	t_html += x.gethtml();
+	t_html += '		</div>';
+	for (var i=0;i<nga_plug_control_table_s.length;i++){
+		t_html += nga_plug_control_table_s[i].html;
 	}
+	t_html += '	</td>\
+			</tr>\
+		</table>'
+
+	nga_plug_control._.addContent(t_html)
+	nga_plug_control._.show()
 }
 
 //标记升级提示为已读
@@ -606,6 +577,52 @@ function nga_plug_control_pluglistman(plug_form){
 	return false;
 }
 
+//升级提醒
+function nga_newmsg(mode,check){
+	var newmsg = false;
+	nga_plug_msg.load();           //加载消息
+	nga_plug_msg.data = nga_plug_msg.data || [];
+	if (nga_plug_msg.data.length > 0){
+		if(mode=="all") newmsg = true;            //如果模式为all则判定为有消息
+		for (var i=0;i<nga_plug_msg.data.length;i++){
+			for (var k=0;k<nga_plug_msg.data[i].msg.length;k++){
+				if (!nga_plug_msg.data[i].msg[k].read){
+					newmsg = true;                 //如果模式为new且有没有标记为已读的则判定为有新消息
+				}
+			}
+		}
+	}
+	
+	if(check){                         //是否启用了check参数，check参数是用来自动关闭消息窗口用的
+		if(!newmsg){                 //如果所有的消息已经标记为已读则关闭消息窗口
+			nga_newmsg_div._.hide();
+		}else{                        //否则继续在2秒后重新判断
+			setTimeout('nga_newmsg("new",true);',2000);
+		}
+		return;
+	}
+	
+	nga_newmsg_div._.addContent(null)
+	nga_newmsg_div._.addTitle('NGA插件中心/插件消息');	
+	var tt_html = '<div>';
+	if (!newmsg){
+		tt_html += '<span class="green">没有任何消息</span>';
+	}else{
+		tt_html += '<input type="button" onclick="nga_plug_readmsg()" value="全部标记为已读"><br>'
+		for (var i=0;i<nga_plug_msg.data.length;i++){
+			for (var k=0;k<nga_plug_msg.data[i].msg.length;k++){
+				if (!nga_plug_msg.data[i].msg[k].read || mode=="all"){
+					tt_html += '<span class="green">'+nga_plug_msg.data[i].title+'</span><br><span>'+nga_plug_msg.data[i].msg[k].text+'</span><br><br>'
+				}
+			}
+		}
+	}
+	tt_html += '</div>'
+	nga_newmsg_div._.addContent(tt_html)
+	nga_newmsg_div._.show()
+	if(mode=="new") setTimeout('nga_newmsg("new",true);',2000);
+}
+
 //插件控制台-生成设置页
 function nga_plug_control_getplugmanhtml(){
 	var th = "";
@@ -644,14 +661,14 @@ var nga_plug_plugs = [
 	id:"nga_edit",
 	title:'UBB编辑器',
 	src:"http://ngaplugins.googlecode.com/svn/trunk/editor/editor.js",
-	testsrc:"http://ngaplugins.googlecode.com/svn/trunk/editor/editor.test.js",
+	testsrc:"http://lintx.org/ngaplugins/editor/editor.test.js",
 	charset:"UTF-8",
 	check:true
 },{
 	id:"Blacklist",
 	title:"黑名单插件",
 	src:"http://ngaplugins.googlecode.com/svn/trunk/Blacklist.js",
-	testsrc:"http://ngaplugins.googlecode.com/svn/trunk/Blacklist.test.js",
+	testsrc:"http://lintx.org/ngaplugins/Blacklist.test.js",
 	charset:"UTF-8",
 	check:true
 },{
@@ -670,14 +687,14 @@ var nga_plug_plugs = [
 	id:"othertools",
 	title:"小工具集合",
 	src:"http://ngaplugins.googlecode.com/svn/trunk/othertools.js",
-	testsrc:"http://ngaplugins.googlecode.com/svn/trunk/othertools.test.js",
+	testsrc:"http://lintx.org/ngaplugins/othertools.test.js",
 	charset:"UTF-8",
 	check:true
 },{
 	id:"varietynga",
 	title:"百变NGA",
 	src:"http://ngaplugins.googlecode.com/svn/trunk/varietynga.js",
-	testsrc:"http://ngaplugins.googlecode.com/svn/trunk/varietynga.test.js",
+	testsrc:"http://lintx.org/ngaplugins/varietynga.test.js",
 	charset:"UTF-8",
 	check:true
 }
@@ -688,6 +705,8 @@ var nga_plug_user_plugs = new nga_plug_local_data("nga_plug_user_plugs");  //自
 var nga_plug_plugs_check = new nga_plug_local_data("nga_plug_plugs");      //固定插件开启状态
 var nga_plug_settings = new nga_plug_local_data("nga_plug_setting");
 var nga_plug_msg = new nga_plug_local_data("nga_plug_msg");
+var nga_plug_control = new commonui.createCommmonWindow();
+var nga_newmsg_div = new commonui.createCommmonWindow();
 
 function nga_plug_control_Initialization(){
 	var istest = false;
@@ -696,31 +715,16 @@ function nga_plug_control_Initialization(){
 	nga_plug_msg.load();
 	nga_plug_msg.data = nga_plug_msg.data || [];
 	
-	//创建打开本插件设置的链接
-	//var nga_plug_control_t_link = document.getElementById("mainmenu").getElementsByTagName("td");
-	//var nga_plug_control_link_td = document.createElement("td");
-	//var nga_plug_control_link = document.createElement("a");
-	//nga_plug_control_link.href="javascript:void(0)";
-	//if (newmsg){
-	//	nga_plug_control_link.onclick=function(event){event.cancelBubble = true;nga_plug_control_create("newmsg");};
-	//}else{
-	//	nga_plug_control_link.onclick=function(event){event.cancelBubble = true;nga_plug_control_create();};
-	//}
-	//nga_plug_control_link.className="rep gray txtbtnx b";
-	//nga_plug_control_link.innerHTML="插件";
-	//nga_plug_control_link_td.appendChild(nga_plug_control_link);
-	//try{nga_plug_control_t_link[2].parentNode.insertBefore(nga_plug_control_link_td,nga_plug_control_t_link[2]);}catch(e){};
 	commonui.mainMenu.addItemOnTheFly("插件设置",null,function(event){nga_plug_control_create();})
 	
-	//nga_plug_addmsg("nga_plug","NGA 插件设置中心","恭喜！\n插件安装成功，更多功能请点击上方的“关于”，然后点击下面的“参与讨论”链接。","install");
 	nga_plug_addmsg("nga_plug","NGA 插件设置中心","设置菜单链接修改到“用户中心/左上角头像”-“论坛设置”-“插件设置”中。");
-	//nga_plug_addmsg("nga_plug","NGA 插件设置中心","修复微博风格显示帖子中，附件图片无法显示的bug");
+	nga_plug_addmsg("nga_plug","NGA 插件设置中心","修改设置界面和新消息的UI");
 	nga_plug_addmsg("nga_plug","百变NGA","折叠按钮在内容展开之后不会消失，再次点击可以将内容重新折叠");
 	
 	//获取UBB编辑器插件是否测试
 	var js = document.getElementsByTagName("script");
 	for (var i = 0; i < js.length; i++) {
-		if (js[i].src.indexOf("svn/ngaplug/command.test.js") >= 0){
+		if (js[i].src.indexOf("lintx.org/plugins/command.js") >= 0){
 			try{
 				for (var i=0;i<nga_plug_plugs.length;i++){
 					if (nga_plug_plugs[i].testsrc != null) nga_plug_plugs[i].src = nga_plug_plugs[i].testsrc;
@@ -763,20 +767,7 @@ function nga_plug_control_Initialization(){
 		}
 	}
 	
-	//升级提醒
-	var newmsg = false;
-	if (nga_plug_msg.data.length > 0){
-		for (var i=0;i<nga_plug_msg.data.length;i++){
-			for (var k=0;k<nga_plug_msg.data[i].msg.length;k++){
-				if (!nga_plug_msg.data[i].msg[k].read){
-					// nga_plug_control_link.style.color= "sandyBrown";
-					//nga_plug_control_link.title="有插件升级了，点击查看升级内容。"
-					newmsg = true;
-				}
-			}
-		}
-	}
-	if (newmsg) nga_plug_control_create("newmsg");
+	nga_newmsg("new")   //升级提醒
 }
 
 var nga_plug_control_isload = nga_plug_control_isload || false;
