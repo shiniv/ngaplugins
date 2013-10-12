@@ -601,7 +601,7 @@ function nga_newmsg(mode,check){
 		}
 		return;
 	}
-	
+	if(mode=="new" && !newmsg) return;
 	nga_newmsg_div._.addContent(null)
 	nga_newmsg_div._.addTitle('NGA插件中心/插件消息');	
 	var tt_html = '<div>';
