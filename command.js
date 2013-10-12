@@ -92,7 +92,11 @@ function nga_plug_XMLHttp(url,func,arg){
 	if(this.ajax!=null){
 		this.ajax.open("get",url,true);
 		this.ajax.onreadystatechange=httptateChange;
-		this.ajax.overrideMimeType("text/html;charset=gbk");
+		if (this.ajax.overrideMimeType){
+			this.ajax.overrideMimeType("text/html;charset=gbk");
+		}else{
+			this.ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded; charset:GBK");
+		}
 		this.ajax.send(null);
 	}
 	this.func = func;
@@ -102,12 +106,35 @@ function nga_plug_XMLHttp(url,func,arg){
 		//当指定XMLHttpRequest为异步传输时(false),发生任何状态的变化，该对象都会调用onreadystatechange所指定的函数
 		if(this_.ajax.readyState == 4){  //XMLHttpRequest处理状态，4表示处理完毕
 			if(this_.ajax.status == 200){ //服务器响应的HTTP代码，200表示正常
-				this_.func(this_.ajax.responseText,this_.arg);
+				if (window.navigator.userAgent.indexOf("MSIE") >= 1){
+					this_.func(gb2utf8(this_.ajax.responseBody),this_.arg);
+				}else{
+					this_.func(this_.ajax.responseText,this_.arg);
+				}
 			}
 		}
 	}
+	
+	function gb2utf8(data){
+		var glbEncode = [];
+		gb2utf8_data = data;
+		execScript("gb2utf8_data = MidB(gb2utf8_data, 1)", "VBScript");
+		var t=escape(gb2utf8_data).replace(/%u/g,"").replace(/(.{2})(.{2})/g,"%$2%$1").replace(/%([A-Z].)%(.{2})/g,"@$1$2");
+		t=t.split("@");
+		var i=0,j=t.length,k;
+		while(++i<j) {
+			k=t[i].substring(0,4);
+			if(!glbEncode[k]) {
+				gb2utf8_char = eval("0x"+k);
+				execScript("gb2utf8_char = Chr(gb2utf8_char)", "VBScript");
+				glbEncode[k]=escape(gb2utf8_char).substring(1,6);
+			}
+			t[i]=glbEncode[k]+t[i].substring(4);
+		}
+		gb2utf8_data = gb2utf8_char = null;
+		return unescape(t.join("%"));
+	}
 }
-
 
 //  全局函数：保存、读取设置模块（使用此模块保存的数据存储于本地数据localStorage中）
 //  使用方法：var x = nga_plug_local_data("key");    初始化   x是你的变量  key是保存在本地数据中的key（即使用localStorage.key可读取数据的key，不可与其他插件相同）
@@ -378,7 +405,7 @@ function nga_plug_tab_setTabList(obj,act){
 function nga_plug_table_setTab(obj){
 	var tspan=obj.parentNode.getElementsByTagName("span");
 	var ttable=document.getElementById("nga_plug_control_table");
-	var ttd=ttable.rows[1].cells[1];
+	var ttd=ttable.rows[0].cells[1];
 	var tdiv1=ttd.getElementsByTagName("div");
 	var tdiv=new Array();
 	for (var i=0;i<tdiv1.length;i++){
@@ -719,6 +746,7 @@ function nga_plug_control_Initialization(){
 	
 	nga_plug_addmsg("nga_plug","NGA 插件设置中心","设置菜单链接修改到“用户中心/左上角头像”-“论坛设置”-“插件设置”中。");
 	nga_plug_addmsg("nga_plug","NGA 插件设置中心","修改设置界面和新消息的UI");
+	nga_plug_addmsg("nga_plug","NGA 插件设置中心","1.修复设置窗左边不能切换。\n2.IE支持即时加载（修改了nga_plug_XMLHttp）");
 	nga_plug_addmsg("nga_plug","百变NGA","折叠按钮在内容展开之后不会消失，再次点击可以将内容重新折叠");
 	
 	//获取UBB编辑器插件是否测试
