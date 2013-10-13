@@ -57,13 +57,13 @@ nga_plug_tab.prototype.gethtml = function(){
 	s += '<div class="nga_plug_tab" >\
 	<div class="nga_plug_tab_menu_box" onload="nga_plug_tab_setTabList(this,\'load\')"> \
 		<ul class="nga_plug_tab_menu"> \
-			<li class="none" style="width:20px;" onclick="nga_plug_tab_setTabList(this.parentNode,\'l\')"><span><a href="javascript:void(0)"><-</a></span></li>';
+			<li class="nga_plug_tab_none" style="width:20px;" onclick="nga_plug_tab_setTabList(this.parentNode,\'l\')"><span><a href="javascript:void(0)"><-</a></span></li>';
 	for (var i=0;i<this.data.length;i++){
 		s += '<li class="';
 		s += this.data[i][2]?'nga_plug_tab_menu_open':'nga_plug_tab_menu_close';
 		s += '" onclick="nga_plug_tab_setTab(this,'+ i +')"><span><a href="javascript:void(0)">' + this.data[i][0] + '</a></span></li>';
 	}
-	s += '	<li class="none" style="width:20px;" onclick="nga_plug_tab_setTabList(this.parentNode,\'r\')"><span><a href="javascript:void(0)">-></a></span></li>\
+	s += '	<li class="nga_plug_tab_none" style="width:20px;" onclick="nga_plug_tab_setTabList(this.parentNode,\'r\')"><span><a href="javascript:void(0)">-></a></span></li>\
 		</ul>\
 		<div class="nga_plug_tab_main">';
 	for (var i=0;i<this.data.length;i++){
@@ -475,7 +475,8 @@ function nga_plug_readmsg(){
 			nga_plug_msg.save();
 		}
 	}
-	alert("所有消息已经标记为已读。");
+	//alert("所有消息已经标记为已读。");
+	nga_newmsg_div._.hide();
 }
 
 //本插件的加载JS函数，和NGA本身相同功能的函数的callback处理模式不同以可以在callback中传递参数
@@ -688,14 +689,14 @@ var nga_plug_plugs = [
 	id:"nga_edit",
 	title:'UBB编辑器',
 	src:"http://ngaplugins.googlecode.com/svn/trunk/editor/editor.js",
-	testsrc:"http://lintx.org/ngaplugins/editor/editor.test.js",
+	testsrc:"http://lintx.org/ngaplugins/editor/editor.js",
 	charset:"UTF-8",
 	check:true
 },{
 	id:"Blacklist",
 	title:"黑名单插件",
 	src:"http://ngaplugins.googlecode.com/svn/trunk/Blacklist.js",
-	testsrc:"http://lintx.org/ngaplugins/Blacklist.test.js",
+	testsrc:"http://lintx.org/ngaplugins/Blacklist.js",
 	charset:"UTF-8",
 	check:true
 },{
@@ -714,14 +715,14 @@ var nga_plug_plugs = [
 	id:"othertools",
 	title:"小工具集合",
 	src:"http://ngaplugins.googlecode.com/svn/trunk/othertools.js",
-	testsrc:"http://lintx.org/ngaplugins/othertools.test.js",
+	testsrc:"http://lintx.org/ngaplugins/othertools.js",
 	charset:"UTF-8",
 	check:true
 },{
 	id:"varietynga",
 	title:"百变NGA",
 	src:"http://ngaplugins.googlecode.com/svn/trunk/varietynga.js",
-	testsrc:"http://lintx.org/ngaplugins/varietynga.test.js",
+	testsrc:"http://lintx.org/ngaplugins/varietynga.js",
 	charset:"UTF-8",
 	check:true
 }
@@ -746,13 +747,14 @@ function nga_plug_control_Initialization(){
 	
 	nga_plug_addmsg("nga_plug","NGA 插件设置中心","设置菜单链接修改到“用户中心/左上角头像”-“论坛设置”-“插件设置”中。");
 	nga_plug_addmsg("nga_plug","NGA 插件设置中心","修改设置界面和新消息的UI");
+	nga_plug_addmsg("nga_plug","NGA 插件设置中心","1.修复一个TAB组件左右箭头按钮不正确显示的问题。\n2.修改升级提示细节。");
 	nga_plug_addmsg("nga_plug","NGA 插件设置中心","1.修复设置窗左边不能切换。\n2.IE支持即时加载（修改了nga_plug_XMLHttp）");
 	nga_plug_addmsg("nga_plug","百变NGA","折叠按钮在内容展开之后不会消失，再次点击可以将内容重新折叠");
 	
 	//获取UBB编辑器插件是否测试
 	var js = document.getElementsByTagName("script");
 	for (var i = 0; i < js.length; i++) {
-		if (js[i].src.indexOf("lintx.org/plugins/command.js") >= 0){
+		if (js[i].src.indexOf("lintx.org/ngaplugins/command.js") >= 0){
 			try{
 				for (var i=0;i<nga_plug_plugs.length;i++){
 					if (nga_plug_plugs[i].testsrc != null) nga_plug_plugs[i].src = nga_plug_plugs[i].testsrc;
