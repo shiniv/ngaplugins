@@ -13,6 +13,9 @@
 	padding:0;
 	position:absolute;
 }
+.nga_plug_tab_none{
+	display:none;
+}
 .nga_plug_tab_menu li{
 	float:left;
 	display:block;
