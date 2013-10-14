@@ -467,18 +467,6 @@ function nga_plug_control_create(){
 	nga_plug_control._.show()
 }
 
-//标记升级提示为已读
-function nga_plug_readmsg(){
-	for (var i=0;i<nga_plug_msg.data.length;i++){
-		for (var k=0;k<nga_plug_msg.data[i].msg.length;k++){
-			nga_plug_msg.data[i].msg[k].read = true;
-			nga_plug_msg.save();
-		}
-	}
-	//alert("所有消息已经标记为已读。");
-	nga_newmsg_div._.hide();
-}
-
 //本插件的加载JS函数，和NGA本身相同功能的函数的callback处理模式不同以可以在callback中传递参数
 function nga_plug_loaderScript(src,callback,charset){
 	var x = document.createElement('script');
@@ -605,6 +593,18 @@ function nga_plug_control_pluglistman(plug_form){
 	return false;
 }
 
+//标记升级提示为已读
+function nga_plug_readmsg(){
+	for (var i=0;i<nga_plug_msg.data.length;i++){
+		for (var k=0;k<nga_plug_msg.data[i].msg.length;k++){
+			nga_plug_msg.data[i].msg[k].read = true;
+			nga_plug_msg.save();
+		}
+	}
+	//alert("所有消息已经标记为已读。");
+	nga_newmsg_div._.hide();
+}
+
 //升级提醒
 function nga_newmsg(mode,check){
 	var newmsg = false;
@@ -625,30 +625,33 @@ function nga_newmsg(mode,check){
 		if(!newmsg){                 //如果所有的消息已经标记为已读则关闭消息窗口
 			nga_newmsg_div._.hide();
 		}else{                        //否则继续在2秒后重新判断
-			setTimeout('nga_newmsg("new",true);',2000);
+			smsg();
 		}
 		return;
 	}
 	if(mode=="new" && !newmsg) return;
-	nga_newmsg_div._.addContent(null)
-	nga_newmsg_div._.addTitle('NGA插件中心/插件消息');	
-	var tt_html = '<div>';
-	if (!newmsg){
-		tt_html += '<span class="green">没有任何消息</span>';
-	}else{
-		tt_html += '<input type="button" onclick="nga_plug_readmsg()" value="全部标记为已读"><br>'
-		for (var i=0;i<nga_plug_msg.data.length;i++){
-			for (var k=0;k<nga_plug_msg.data[i].msg.length;k++){
-				if (!nga_plug_msg.data[i].msg[k].read || mode=="all"){
-					tt_html += '<span class="green">'+nga_plug_msg.data[i].title+'</span><br><span>'+nga_plug_msg.data[i].msg[k].text+'</span><br><br>'
+	smsg();
+	function smsg(){
+		nga_newmsg_div._.addContent(null)
+		nga_newmsg_div._.addTitle('NGA插件中心/插件消息');	
+		var tt_html = '<div>';
+		if (!newmsg){
+			tt_html += '<span class="green">没有任何消息</span>';
+		}else{
+			tt_html += '<input type="button" onclick="nga_plug_readmsg()" value="全部标记为已读"><br>'
+			for (var i=0;i<nga_plug_msg.data.length;i++){
+				for (var k=0;k<nga_plug_msg.data[i].msg.length;k++){
+					if (!nga_plug_msg.data[i].msg[k].read || mode=="all"){
+						tt_html += '<span class="green">'+nga_plug_msg.data[i].title+'</span><br><span>'+nga_plug_msg.data[i].msg[k].text+'</span><br><br>'
+					}
 				}
 			}
 		}
+		tt_html += '</div>'
+		nga_newmsg_div._.addContent(tt_html)
+		nga_newmsg_div._.show()
+		if(mode=="new") setTimeout('nga_newmsg("new",true);',2000);
 	}
-	tt_html += '</div>'
-	nga_newmsg_div._.addContent(tt_html)
-	nga_newmsg_div._.show()
-	if(mode=="new") setTimeout('nga_newmsg("new",true);',2000);
 }
 
 //插件控制台-生成设置页
