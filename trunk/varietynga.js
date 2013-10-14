@@ -132,10 +132,12 @@ function varietynga_Initialization(){
 //腾讯微博风格-滚动条事件
 varietynga_weibo_ajax.f = function(){
 	try{
+		if(varietynga_weibo_ajax.t=='') return;
 		var top = document.getElementById('post1strow'+varietynga_maxl).getBoundingClientRect().top //元素顶端到可见区域顶端的距离
 		var se = document.documentElement.clientHeight //浏览器可见区域高度。
 		if(top <= se){
 			eval(varietynga_weibo_ajax.t)
+			varietynga_weibo_ajax.t = ''
 		}
 	}catch(e){}
 }
