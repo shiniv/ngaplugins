@@ -188,13 +188,7 @@ function varietynga_weibo(html,arg){
 	var tspan = document.getElementById('varietynga_over_span');
 	var tipdiv = document.getElementById('varietynga_tip_div');
 	if (arg.reload){
-		if (Math.abs(varietynga_lasthtml.length - html.length) > 10){
-			//var ttab = tspan.parentNode.lastChild;
-			//while (ttab.previousSibling.id!='varietynga_over_span'){
-			//	ttab=ttab.previousSibling;
-			//	ttab.parentNode.removeChild(ttab.nextSibling)
-			//}
-		}else{
+		if (Math.abs(varietynga_lasthtml.length - html.length) <= 10){
 			setTimeout('new nga_plug_XMLHttp(\''+arg.url + (arg.p)+'\',varietynga_weibo,{url:\''+arg.url+'\',p:'+(arg.p)+',n:1,reload:true})',10000);
 			return;
 		}
@@ -208,9 +202,7 @@ function varietynga_weibo(html,arg){
 		
 	if (/<title>提示信息<\/title>/.test(html)) {over(html,arg);return;}
 	if (arg.n == 5) {load(html,arg);nload(html,arg);return;}
-	//if(arg.obj) {
-	//	arg.obj.parentNode.removeChild(arg.obj);
-	//}
+	
 	load(html,arg);
 	varietynga_weibo_scroll(1,'new nga_plug_XMLHttp("'+arg.url + (arg.p + 1)+'",varietynga_weibo,{url:"'+arg.url+'",p:'+(arg.p+1)+',n:'+(arg.n+1)+'});')
 	function load(html,arg){
@@ -221,8 +213,6 @@ function varietynga_weibo(html,arg){
 			var thtml = /<div class='w100' id='m_posts_c'[\s\S]*?<div class='module_wrap'>/.exec(html)[0];
 	        if (/<table[\s\S]+?<\/table>[\s\S]+?(<table[\s\S]+<\/table>)/.test(thtml)){
 	            thtml = /<table[\s\S]+?<\/table>[\s\S]+?(<table[\s\S]+<\/table>)/.exec(thtml)[1];
-				//tspan.parentNode.removeChild(tspan);
-				//document.getElementById("m_posts_c").appendChild(_$('/span').$0('className','x','id','varietynga_over_span'))
 	            var x = document.createElement('div');
 	            x.innerHTML = thtml;
 				var tmaxl = 0;
@@ -236,14 +226,13 @@ function varietynga_weibo(html,arg){
 					if(n.tagName && n.tagName.toLowerCase()=="table" && n.rows && n.rows[0] && n.rows[0].id && /post1strow(\d+)/.exec(n.rows[0].id)[1]) varietynga_maxl = /post1strow(\d+)/.exec(n.rows[0].id)[1];
 					document.getElementById("m_posts_c").appendChild(n);
 					
-					if (n.innerHTML && /<script>([\s\S]*?)<\/script>/gi.test(n.innerHTML)){    //格式化处理
-						var t_js = n.innerHTML.match(/<script>([\s\S]*?)<\/script>/gi);
-						for (var i=0;i<t_js.length;i++){
-							var tt_js = /<script>([\s\S]*?)<\/script>/gi.exec(t_js[i])[1];
-							//                格式化                                       附件                                       编辑记录
-							//if(tt_js.indexOf("commonui.postArg.proc")>=0 || tt_js.indexOf("ubbcode.attach.load")>=0 || tt_js.indexOf("commonui.loadAlertInfo")>=0){
-							if(tt_js.indexOf("commonui.postArg.proc")>=0 || tt_js.indexOf("ubbcode.attach.load")>=0){
-								try{eval(tt_js)}catch(e){}
+					if (n.nodeType==1){
+						var ts = n.getElementsByTagName('script');
+						for(var i=0;i<ts.length;i++){
+							if(ts[i].innerHTML.indexOf('commonui.loadAlertInfo')>=0){
+								try{eval(ts[i].innerHTML.replace('commonui.loadAlertInfo(','varietynga_loadAlertInfo(ts[i],'))}catch(e){}             //处理编辑记录和评分记录
+							}else if(ts[i].innerHTML.indexOf('commonui.postArg.proc')>=0 || ts[i].innerHTML.indexOf('ubbcode.attach.load')>=0){       //格式化样式和附件列表
+								try{eval(ts[i].innerHTML)}catch(e){}
 							}
 						}
 					}
@@ -253,8 +242,27 @@ function varietynga_weibo(html,arg){
 		for (var i=0;i<nga_plug_varietynga_reload.length;i++){
 			setTimeout('try{'+nga_plug_varietynga_reload[i]+'}catch(e){}',3000);
 		}
-		//setTimeout('try{Backlist_bl()}catch(e){};',3000); //调用添加屏蔽链接模块   暂行办法
-		//setTimeout('try{if (varietynga_setting.data.set.img) varietynga_img();}catch(e){}',3000) //加载图片旋转功能
+	}
+	function varietynga_loadAlertInfo(obj,info){   //评分记录和编辑记录处理
+		if(!info)return;
+		info = info.split(/\t|\n/);
+		var e = '';
+		var p = '';
+		var q = '';
+		for (var k in info){
+			if(typeof(info[k])!='string')continue
+			info[k] = info[k].replace(/^[\t\n ]+/,'');
+			if (info[k]){
+				if (info[k].substr(0,4).toLowerCase()=='edit')e+=info[k]+' ';
+				else p+=info[k].replace(/\[([\d\.]+) ([\d\.]+) ([\d\.]+)\]/,'[$1声望 $2威望 $3G]')+' ';
+			}
+		}
+		var obja = obj.nextSibling;
+		while (obja.nodeType!=1){
+			obja=obja.nextSibling;
+		}
+		if(e) obj.parentNode.insertBefore(_$('/div').$0('class','silver','innerHTML',e),obja);
+		if(p) obj.parentNode.insertBefore(_$('/table').$0('class','quote','innerHTML','<tr><td>'+p+'</td></tr>'),obja);
 	}
 	function nload(html,arg){
 		var oo = commonui.stdBtns()
