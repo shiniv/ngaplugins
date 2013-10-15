@@ -43,6 +43,7 @@ function varietynga_Initialization(){
 	nga_plug_addmsg("varietynga","百变NGA","由于贴吧模式会大量消耗NGA服务器资源，现暂停使用。");
 	nga_plug_addmsg("varietynga","百变NGA","1.修复即时加载已经到末尾页产生的BUG。\n2.即时加载末尾页不再闪屏。\n3.UI调整。");
 	nga_plug_addmsg("varietynga","百变NGA","修改即时加载时机：\n从插件运行时加载改为页面最后一个楼层从草丛中跳出来时加载，节省了服务器资源。");
+	nga_plug_addmsg("varietynga","百变NGA","修复即时加载不能显示编辑记录的BUG");
 	
 	varietynga_setting.load();
 	varietynga_setting.data = varietynga_setting.data || {set:{tieba:true,weibo:true,img:true}};
@@ -235,11 +236,12 @@ function varietynga_weibo(html,arg){
 					if(n.tagName && n.tagName.toLowerCase()=="table" && n.rows && n.rows[0] && n.rows[0].id && /post1strow(\d+)/.exec(n.rows[0].id)[1]) varietynga_maxl = /post1strow(\d+)/.exec(n.rows[0].id)[1];
 					document.getElementById("m_posts_c").appendChild(n);
 					
-					if (n.innerHTML && /<script>([\s\S]*?)<\/script>/gi.test(n.innerHTML)){    //附件处理
+					if (n.innerHTML && /<script>([\s\S]*?)<\/script>/gi.test(n.innerHTML)){    //格式化处理
 						var t_js = n.innerHTML.match(/<script>([\s\S]*?)<\/script>/gi);
 						for (var i=0;i<t_js.length;i++){
 							var tt_js = /<script>([\s\S]*?)<\/script>/gi.exec(t_js[i])[1];
-							if(tt_js.indexOf("commonui.postArg.proc")>=0 || tt_js.indexOf("ubbcode.attach.load")>=0){
+							//                格式化                                       附件                                       编辑记录
+							if(tt_js.indexOf("commonui.postArg.proc")>=0 || tt_js.indexOf("ubbcode.attach.load")>=0 || tt_js.indexOf("commonui.loadAlertInfo")>=0){
 								try{eval(tt_js)}catch(e){}
 							}
 						}
