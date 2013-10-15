@@ -241,7 +241,8 @@ function varietynga_weibo(html,arg){
 						for (var i=0;i<t_js.length;i++){
 							var tt_js = /<script>([\s\S]*?)<\/script>/gi.exec(t_js[i])[1];
 							//                格式化                                       附件                                       编辑记录
-							if(tt_js.indexOf("commonui.postArg.proc")>=0 || tt_js.indexOf("ubbcode.attach.load")>=0 || tt_js.indexOf("commonui.loadAlertInfo")>=0){
+							//if(tt_js.indexOf("commonui.postArg.proc")>=0 || tt_js.indexOf("ubbcode.attach.load")>=0 || tt_js.indexOf("commonui.loadAlertInfo")>=0){
+							if(tt_js.indexOf("commonui.postArg.proc")>=0 || tt_js.indexOf("ubbcode.attach.load")>=0){
 								try{eval(tt_js)}catch(e){}
 							}
 						}
