@@ -44,6 +44,7 @@ function varietynga_Initialization(){
 	nga_plug_addmsg("varietynga","百变NGA","1.修复即时加载已经到末尾页产生的BUG。\n2.即时加载末尾页不再闪屏。\n3.UI调整。");
 	nga_plug_addmsg("varietynga","百变NGA","修改即时加载时机：\n从插件运行时加载改为页面最后一个楼层从草丛中跳出来时加载，节省了服务器资源。");
 	nga_plug_addmsg("varietynga","百变NGA","修复即时加载不能显示编辑记录的BUG");
+	nga_plug_addmsg("varietynga","百变NGA","现在，按了“END”键到页面末尾时，会暂时中止当前页面的即时加载功能，如果需要继续使用，请点击“继续加载”按钮。");
 	
 	varietynga_setting.load();
 	varietynga_setting.data = varietynga_setting.data || {set:{tieba:true,weibo:true,img:true}};
@@ -59,7 +60,7 @@ function varietynga_Initialization(){
 	//	<input onclick="varietynga_setting.data.set.weibo=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.weibo)+'>启用帖子即时加载（腾讯微博风格）<br>\
 	//	<input onclick="varietynga_setting.data.set.img=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.img)+'>启用图片旋转功能>');
 	e.add("总体设置",'<input onclick="varietynga_setting.data.set.weibo=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.weibo)+'>启用帖子即时加载（腾讯微博风格）<br>\
-		<input onclick="varietynga_setting.data.set.img=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.img)+'>启用图片旋转功能>');
+		<input onclick="varietynga_setting.data.set.img=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.img)+'>启用图片旋转功能');
 	e.add("界面设置",varietynga_setthtml());
 	var t = e.gethtml();
 	nga_plug_table_addTab("百变NGA",t);
@@ -105,6 +106,60 @@ function varietynga_Initialization(){
 			for(var i=0;i<n.length;i++){
 				if(n[i].rows && n[i].rows[0] && n[i].rows[0].id && /post1strow(\d+)/.exec(n[i].rows[0].id)[1]) varietynga_maxl = /post1strow(\d+)/.exec(n[i].rows[0].id)[1];
 			}
+			
+			
+			if (navigator.appVersion.indexOf("MSIE") != -1){                //按END键取消自动加载
+				document.attachEvent("onkeydown",function(e){
+					var e = e || window.event;
+					var keyCode = e.which ? e.which : e.keyCode;
+					if (keyCode == 35){   //取消自动加载
+						varietynga_weibo_scroll(0);
+						
+						if(varietynga_weibo_ajax.t!=''){
+							var oo = commonui.stdBtns()   //加载提示
+							oo._.__add(
+								_$('/a').$0(
+									'href','javascript:void(0)',
+									'innerHTML','继续加载',
+									'title','因为你刚刚按下了“END”键，暂时中止了本页面的即时加载功能，如果需要继续使用，请点击这个按钮。',
+									'className','darkred',
+									'onclick','eval(varietynga_weibo_ajax.t)'
+								)
+							)
+							var tipdiv = document.getElementById('varietynga_tip_div');
+							tipdiv.innerHTML = '';
+							tipdiv.appendChild(oo)
+							if(oo._.__vml) oo._.__vml()
+						}
+					}
+				});
+			}else{   // 非IE用addEventListener
+				window.addEventListener("keydown",function(e){
+					var e = e || window.event;
+					var keyCode = e.which ? e.which : e.keyCode;
+					if (keyCode == 35){   //取消自动加载
+						varietynga_weibo_scroll(0);
+						
+						if(varietynga_weibo_ajax.t!=''){
+							var oo = commonui.stdBtns()   //加载提示
+							oo._.__add(
+								_$('/a').$0(
+									'href','javascript:void(0)',
+									'innerHTML','继续加载',
+									'title','因为你刚刚按下了“END”键，暂时中止了本页面的即时加载功能，如果需要继续使用，请点击这个按钮。',
+									'className','darkred',
+									'onclick','eval(varietynga_weibo_ajax.t)'
+								)
+							)
+							var tipdiv = document.getElementById('varietynga_tip_div');
+							tipdiv.innerHTML = '';
+							tipdiv.appendChild(oo)
+							if(oo._.__vml) oo._.__vml()
+						}
+					}
+				},false);
+			}
+			
 			varietynga_weibo_scroll(1,'new nga_plug_XMLHttp("'+pageurl + (nowpage + 1)+'",varietynga_weibo,{url:"'+pageurl+'",p:'+(nowpage + 1)+',n:2,max:'+maxpage+'});')
 		}
 	}
@@ -265,6 +320,7 @@ function varietynga_weibo(html,arg){
 		if(p) obj.parentNode.insertBefore(_$('/table').$0('class','quote','innerHTML','<tr><td>'+p+'</td></tr>'),obja);
 	}
 	function nload(html,arg){
+		varietynga_weibo_ajax.t = '';
 		var oo = commonui.stdBtns()
 		oo._.__add(
 			_$('/a').$0(
@@ -289,6 +345,7 @@ function varietynga_weibo(html,arg){
 		if(oo._.__vml) oo._.__vml()
 	}
 	function over(html,arg){
+		varietynga_weibo_ajax.t = '';
 		var oo = commonui.stdBtns()
 		oo._.__add(
 			_$('/a').$0(
