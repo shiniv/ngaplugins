@@ -813,6 +813,7 @@ function nga_plug_control_Initialization(){
 	nga_plug_addmsg("nga_plug","NGA 插件设置中心","1.修复一个TAB组件左右箭头按钮不正确显示的问题。\n2.修改升级提示细节。");
 	nga_plug_addmsg("nga_plug","NGA 插件设置中心","1.修复设置窗左边不能切换。\n2.IE支持即时加载（修改了nga_plug_XMLHttp）");
 	nga_plug_addmsg("nga_plug","NGA 插件设置中心","修复IE下部分帖子即时加载不能格式化的问题（没有头像签名等）（修复了IE对AJAX的GBK编码支持问题）");
+	nga_plug_addmsg("nga_plug","NGA 插件设置中心","现在，按F2即可打开插件设置");
 	nga_plug_addmsg("nga_plug","百变NGA","折叠按钮在内容展开之后不会消失，再次点击可以将内容重新折叠");
 	
 	//获取UBB编辑器插件是否测试
@@ -859,6 +860,24 @@ function nga_plug_control_Initialization(){
 				nga_plug_loaderScript(nga_plug_user_plugs.data[i].src,"",nga_plug_user_plugs.data[i].charset);
 			}
 		}
+	}
+
+	if (navigator.appVersion.indexOf("MSIE") != -1){                //按F2打开插件设置
+		document.attachEvent("onkeydown",function(e){
+			var e = e || window.event;
+			var keyCode = e.which ? e.which : e.keyCode;
+			if(keyCode == 113){   //打开用户中心
+				nga_plug_control_create()
+			}
+		});
+	}else{   // 非IE用addEventListener
+		window.addEventListener("keydown",function(e){
+			var e = e || window.event;
+			var keyCode = e.which ? e.which : e.keyCode;
+			if(keyCode == 113){   //打开用户中心
+				nga_plug_control_create()
+			}
+		},false);
 	}
 	
 	nga_newmsg("new")   //升级提醒
