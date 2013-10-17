@@ -44,7 +44,7 @@ varietynga_weibo_ajax.k = function(e){
 	if(varietynga_weibo_ajax.t) return;
 	var e = e || window.event;
 	var keyCode = e.which ? e.which : e.keyCode;
-	alert(keyCode)
+	//alert(keyCode)
 	if (keyCode == 35){   //取消自动加载
 		varietynga_weibo_scroll(0);
 		
