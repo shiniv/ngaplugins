@@ -71,7 +71,7 @@ varietynga_weibo_ajax.k = function(e){
 varietynga_weibo_ajax.tf = function(mode){
 	if(mode==2 && !varietynga_weibo_ajax.t) return;
 	var tipdiv = document.getElementById('varietynga_tip_div');
-	varietynga_weibo_ajax.t = '';
+	varietynga_weibo_ajax.s = '';
 	var oo = commonui.stdBtns()
 	if(mode){
 		oo._.__add(
@@ -290,6 +290,8 @@ function varietynga_weibo(html,arg){
 		varietynga_weibo_ajax.tf(2);
 		return;
 	}
+	
+	varietynga_weibo_ajax.t = 1                                                            //进入非over模式，必须赋值为true，否则varietynga_weibo_ajax.tf会直接return
 	if (arg.n == 5) {load(html,arg);nload(html,arg);return;}                               //如果加载的页面达到了5页则进入停止加载模式
 	
 	load(html,arg);                                                                        //如果上面的情况都没有发生，则正常load并给滚动条绑定加载下一页事件
@@ -376,7 +378,7 @@ function varietynga_weibo(html,arg){
 	}
 	
 	function nload(html,arg){                          //停止加载，除非手动按下加载按钮
-		varietynga_weibo_ajax.t = '';
+		varietynga_weibo_ajax.s = '';
 		var oo = commonui.stdBtns()
 		oo._.__add(
 			_$('/a').$0(
