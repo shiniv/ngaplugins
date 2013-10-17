@@ -126,7 +126,7 @@ function varietynga_weibo_scroll(check,tfunc){
 		oo._.__add(
 			_$('/a').$0(
 				'href','javascript:void(0)',
-				'innerHTML','正在加载...',
+				'innerHTML','正在加载<img src="http://ngaplugins.googlecode.com/svn/trunk/progressIndicator16x16.gif" style="height:12px;">',
 				'title','正在加载后面的页面，请稍候...',
 				'className','darkred'
 			)
