@@ -3,7 +3,7 @@ var varietynga_lasthtml = "";
 var varietynga_customcss = document.createElement('style');
 var varietynga_maxpage ;
 var varietynga_maxl = 0;
-var varietynga_weibo_ajax = {s:'',f:'',k:'',t:1,ts:'',tf:''}
+var varietynga_weibo_ajax = {s:'',f:'',k:'',t:-1,ts:'',tf:''}
 
 String.prototype.colorHex = function(){
         var that = this;
@@ -41,7 +41,7 @@ String.prototype.colorHex = function(){
 
 //腾讯微博风格-onkey事件
 varietynga_weibo_ajax.k = function(e){
-	if(varietynga_weibo_ajax.t) return;
+	if(varietynga_weibo_ajax.t && varietynga_weibo_ajax.t!=-1) return;
 	var e = e || window.event;
 	var keyCode = e.which ? e.which : e.keyCode;
 	//alert(keyCode)
@@ -163,9 +163,11 @@ function varietynga_Initialization(){
 	nga_plug_addmsg("varietynga","百变NGA","修复即时加载不能显示编辑记录的BUG");
 	nga_plug_addmsg("varietynga","百变NGA","现在，按了“END”键到页面末尾时，会暂时中止当前页面的即时加载功能，如果需要继续使用，请点击“继续加载”按钮。");
 	nga_plug_addmsg("varietynga","百变NGA","只有一页也会自动加载，自动加载间隔时间修改到6秒，可以手动停止自动加载，自动加载也只能加载到5页。");
+	nga_plug_addmsg("varietynga","百变NGA","1.增加右下角快捷菜单。\n2.修复END键不能停止自动加载的BUG。");
 	
 	varietynga_setting.load();
-	varietynga_setting.data = varietynga_setting.data || {set:{tieba:true,weibo:true,img:true}};
+	varietynga_setting.data = varietynga_setting.data || {set:{tieba:true,weibo:true,img:true,kj:true}};
+	varietynga_setting.data.set.kj = varietynga_setting.data.set.kj == null?true:varietynga_setting.data.set.kj
 	
 	//将小工具集的设置加入导出数据中
 	nga_plug_setting("add","小工具设置","varietynga_setting");
@@ -178,7 +180,8 @@ function varietynga_Initialization(){
 	//	<input onclick="varietynga_setting.data.set.weibo=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.weibo)+'>启用帖子即时加载（腾讯微博风格）<br>\
 	//	<input onclick="varietynga_setting.data.set.img=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.img)+'>启用图片旋转功能>');
 	e.add("总体设置",'<input onclick="varietynga_setting.data.set.weibo=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.weibo)+'>启用帖子即时加载（腾讯微博风格）<br>\
-		<input onclick="varietynga_setting.data.set.img=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.img)+'>启用图片旋转功能');
+		<input onclick="varietynga_setting.data.set.img=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.img)+'>启用图片旋转功能<br>\
+		<input onclick="varietynga_setting.data.set.kj=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.img)+'>启用右下角快捷菜单');
 	e.add("界面设置",varietynga_setthtml());
 	var t = e.gethtml();
 	nga_plug_table_addTab("百变NGA",t);
@@ -208,6 +211,7 @@ function varietynga_Initialization(){
 		//	}
 		//}
 	}else if(location.pathname == "/read.php" && document.URL.indexOf("page=e#a") < 0){
+		if (varietynga_setting.data.set.kj) varietynga_kj();
 		if (location.search.indexOf("pid=") >= 0) return;
 		if (varietynga_setting.data.set.weibo){
 			
@@ -291,7 +295,7 @@ function varietynga_weibo(html,arg){
 		return;
 	}
 	
-	varietynga_weibo_ajax.t = 1                                                            //进入非over模式，必须赋值为true，否则varietynga_weibo_ajax.tf会直接return
+	varietynga_weibo_ajax.t = -1                                                            //进入非over模式，必须赋值为true，否则varietynga_weibo_ajax.tf会直接return
 	if (arg.n == 5) {load(html,arg);nload(html,arg);return;}                               //如果加载的页面达到了5页则进入停止加载模式
 	
 	load(html,arg);                                                                        //如果上面的情况都没有发生，则正常load并给滚动条绑定加载下一页事件
@@ -402,6 +406,53 @@ function varietynga_weibo(html,arg){
 		tipdiv.appendChild(oo)
 		if(oo._.__vml) oo._.__vml()
 	}
+}
+
+//右下角快捷菜单
+function varietynga_kj(){
+	if(/MSIE 6\./.test(navigator.userAgent) && !window.opera) return;
+	
+	var o = document.getElementsByClassName('cell rep txtbtnx darkred');
+	var replylink = '';
+	for(var k in o){
+		if(o[k].title=="发表回复"){
+			//alert(o[k].href)
+			replylink = o[k].href;
+			break;
+		}
+	}
+	
+	var x = document.createElement('div');
+	
+	x.style.position = "fixed";
+	x.style.right = "0px";
+	x.style.bottom = "98px";
+	x.innerHTML = '';
+	x.onmouseover = function(){this.firstChild.style.display = "block";this.lastChild.style.display = "none";}
+	x.onmouseout = function(){this.firstChild.style.display = "none";this.lastChild.style.display = "block";}
+
+	var oo = commonui.stdBtns()
+	oo._.__add(_$('/a').$0('href','javascript:void(0)','innerHTML','TOP','title','到页面顶部','className','darkred','onclick','scrollTo(0,0)'))
+	oo._.__add(_$('/a').$0('href','javascript:void(0)','innerHTML','底部','title','到页面底部','className','darkred','onclick','varietynga_weibo_ajax.k({keyCode:35});scrollTo(0,33500000);'))
+	oo._.__add(_$('/a').$0('href',replylink,'innerHTML','回复','title','发表回复','className','darkred','target','_blank'))
+	oo._.__add(_$('/a').$0('href','javascript:void(0)','innerHTML','设置','title','插件设置中心','className','darkred','onclick','nga_plug_control_create()'))
+	oo.style.display = "none";
+	oo.style.borderBottomRightRadius="0px";
+	oo.style.borderTopRightRadius="0px";
+	oo.style.borderRight="0";
+	x.appendChild(oo)
+	if(oo._.__vml) oo._.__vml()
+	
+	oo = null;
+	oo = commonui.stdBtns()
+	oo._.__add(_$('/a').$0('href','javascript:void(0)','innerHTML','<','className','darkred','style','padding:0'))
+	oo.style.borderBottomRightRadius="0px";
+	oo.style.borderTopRightRadius="0px";
+	oo.style.borderRight="0";
+	x.appendChild(oo)
+	if(oo._.__vml) oo._.__vml()
+	
+	document.body.appendChild(x)
 }
 
 //贴吧风格-使用AJAX获取版面帖子中是否有图片并作相应操作
