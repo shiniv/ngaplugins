@@ -157,17 +157,12 @@ function varietynga_weibo_scroll(check,tfunc){
 }
 
 function varietynga_Initialization(){
-	nga_plug_addmsg("varietynga","百变NGA","由于贴吧模式会大量消耗NGA服务器资源，现暂停使用。");
-	nga_plug_addmsg("varietynga","百变NGA","1.修复即时加载已经到末尾页产生的BUG。\n2.即时加载末尾页不再闪屏。\n3.UI调整。");
-	nga_plug_addmsg("varietynga","百变NGA","修改即时加载时机：\n从插件运行时加载改为页面最后一个楼层从草丛中跳出来时加载，节省了服务器资源。");
-	nga_plug_addmsg("varietynga","百变NGA","修复即时加载不能显示编辑记录的BUG");
-	nga_plug_addmsg("varietynga","百变NGA","现在，按了“END”键到页面末尾时，会暂时中止当前页面的即时加载功能，如果需要继续使用，请点击“继续加载”按钮。");
-	nga_plug_addmsg("varietynga","百变NGA","只有一页也会自动加载，自动加载间隔时间修改到6秒，可以手动停止自动加载，自动加载也只能加载到5页。");
-	nga_plug_addmsg("varietynga","百变NGA","1.增加右下角快捷菜单。\n2.修复END键不能停止自动加载的BUG。");
+	nga_plug_addmsg("varietynga","百变NGA","修复折叠内容可收缩。");
 	
 	varietynga_setting.load();
-	varietynga_setting.data = varietynga_setting.data || {set:{tieba:true,weibo:true,img:true,kj:true}};
+	varietynga_setting.data = varietynga_setting.data || {set:{tieba:true,weibo:true,img:true,kj:true,zd:true}};
 	varietynga_setting.data.set.kj = varietynga_setting.data.set.kj == null?true:varietynga_setting.data.set.kj
+	varietynga_setting.data.set.zd = varietynga_setting.data.set.zd == null?true:varietynga_setting.data.set.zd
 	
 	//将小工具集的设置加入导出数据中
 	nga_plug_setting("add","小工具设置","varietynga_setting");
@@ -181,7 +176,8 @@ function varietynga_Initialization(){
 	//	<input onclick="varietynga_setting.data.set.img=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.img)+'>启用图片旋转功能>');
 	e.add("总体设置",'<input onclick="varietynga_setting.data.set.weibo=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.weibo)+'>启用帖子即时加载（腾讯微博风格）<br>\
 		<input onclick="varietynga_setting.data.set.img=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.img)+'>启用图片旋转功能<br>\
-		<input onclick="varietynga_setting.data.set.kj=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.img)+'>启用右下角快捷菜单');
+		<input onclick="varietynga_setting.data.set.kj=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.kj)+'>启用右下角快捷菜单<br>\
+		<input onclick="varietynga_setting.data.set.zd=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.zd)+'>启用折叠内容可收缩');
 	e.add("界面设置",varietynga_setthtml());
 	var t = e.gethtml();
 	nga_plug_table_addTab("百变NGA",t);
@@ -189,10 +185,12 @@ function varietynga_Initialization(){
 	varietynga_customcss.type="text/css";
 	document.body.appendChild(varietynga_customcss);
 	
-	var x = document.createElement('style');
-	var h = document.getElementsByTagName('head')[0];
-	x.innerHTML = ".varietynga_cur_zin{cursor: url(http://ngaplugins.googlecode.com/svn/trunk/img/cur_zin.cur) 14 14,pointer;}.varietynga_cur_zout{cursor: url(http://ngaplugins.googlecode.com/svn/trunk/img/cur_zout.cur) 14 14,pointer;}";
-	h.insertBefore(x,h.firstChild);
+	
+	if (varietynga_setting.data.set.kj && !ubbcode.collapse.load_ngaplug) varietynga_setCollapseButton();
+	//var x = document.createElement('style');
+	//var h = document.getElementsByTagName('head')[0];
+	//x.innerHTML = ".varietynga_cur_zin{cursor: url(http://ngaplugins.googlecode.com/svn/trunk/img/cur_zin.cur) 14 14,pointer;}.varietynga_cur_zout{cursor: url(http://ngaplugins.googlecode.com/svn/trunk/img/cur_zout.cur) 14 14,pointer;}";
+	//h.insertBefore(x,h.firstChild);
 	
 	if (location.pathname != "/thread.php" && location.pathname != "/read.php") return;
 	if (location.search.indexOf("authorid") >= 0 && location.pathname == "/thread.php") return;
@@ -595,19 +593,25 @@ function varietynga_setimg(img){
 	}
 }
 
+//折叠内容收缩
 function varietynga_setCollapseButton(){
-	var colBtn = document.getElementsByName("collapseButton");
-	
-	for(var i=0 ; i< colBtn.length ; i++){
-		colBtn[i].onclick = function(){
-			if(this.parentNode.nextSibling.style.display == "block"){
-				this.parentNode.nextSibling.style.display="none";
-				this.innerHTML = "+";
-				this.style.padding = "0 2px";
-			}else if(this.parentNode.nextSibling.style.display == "none"){
-				this.parentNode.nextSibling.style.display="block";
-				this.innerHTML = "-";
-				this.style.padding = "0 4px";
+	ubbcode.collapse.load_ngaplug = ubbcode.collapse.load
+	ubbcode.collapse.load = function(o,id){
+		var oo = o.previousSibling
+		oo.style.display = 'block'
+		oo = oo.getElementsByTagName('button')[0]
+		if(o.innerHTML==""){
+			oo.innerHTML = "-";
+			oo.style.width = "17px";
+			oo.style.margin = "2px";
+			ubbcode.collapse.load_ngaplug(o,id)
+		}else{
+			if(oo.innerHTML == "+"){
+				o.style.display="block";
+				oo.innerHTML = "-";
+			}else{
+				o.style.display="none";
+				oo.innerHTML = "+";
 			}
 		}
 	}
@@ -741,6 +745,7 @@ function varietynga_checkcolor(obj){
 	varietynga_css();
 }
 
+//界面修改-HTML界面
 function varietynga_setthtml(){
 var s = "";
 	s += '<div>\
@@ -841,8 +846,6 @@ function varietynga_img(){
 		//if (width < 200 && height < 200) return false
 		return true
 	}
-	
-	varietynga_setCollapseButton();
 }
 
 function varietynga_imgclick(o,p){

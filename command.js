@@ -525,6 +525,7 @@ function nga_plug_control_create(){
 
 	nga_plug_control._.addContent(t_html)
 	nga_plug_control._.show()
+	if(/^-/.test(nga_plug_control.style.top)) nga_plug_control.style.top = '5px'
 }
 
 //本插件的加载JS函数，和NGA本身相同功能的函数的callback处理模式不同以可以在callback中传递参数
@@ -710,6 +711,7 @@ function nga_newmsg(mode,check){
 		tt_html += '</div>'
 		nga_newmsg_div._.addContent(tt_html)
 		nga_newmsg_div._.show()
+		if(/^-/.test(nga_newmsg_div.style.top)) nga_newmsg_div.style.top = '5px'
 		if(mode=="new") setTimeout('nga_newmsg("new",true);',2000);
 	}
 }
