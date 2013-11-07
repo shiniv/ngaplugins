@@ -308,6 +308,7 @@ function varietynga_weibo(html,arg){
 	if (maxpage == arg.p) {                                                                //如果最大页==当前页则load后进入over模式
 		load(html,arg);
 		varietynga_weibo_ajax.ts = 'new nga_plug_XMLHttp(\''+arg.url + (arg.p)+'\',varietynga_weibo,{url:\''+arg.url+'\',p:'+(arg.p)+',n:'+(arg.n)+'})';
+		var tid = /tid=(\d+)/.exec(varietynga_weibo_ajax.ts)[1]
 		__NUKE.doRequest({
 			u:'/nuke.php?__api=1&__act=get&__lib=get_topic_modify_time&tid='+tid+'&__output=1',
 			f:function(d){
@@ -319,6 +320,7 @@ function varietynga_weibo(html,arg){
 	}
 	if (/<title>提示信息<\/title>/.test(html)) {                                           //如果提示错误也进入over模式
 		varietynga_weibo_ajax.ts = 'new nga_plug_XMLHttp(\''+arg.url + (arg.p)+'\',varietynga_weibo,{url:\''+arg.url+'\',p:'+(arg.p)+',n:'+(arg.n)+'})';
+		var tid = /tid=(\d+)/.exec(varietynga_weibo_ajax.ts)[1]
 		__NUKE.doRequest({
 			u:'/nuke.php?__api=1&__act=get&__lib=get_topic_modify_time&tid='+tid+'&__output=1',
 			f:function(d){
