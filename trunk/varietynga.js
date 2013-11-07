@@ -3,7 +3,7 @@ var varietynga_lasthtml = "";
 var varietynga_customcss = document.createElement('style');
 var varietynga_maxpage ;
 var varietynga_maxl = 0;
-var varietynga_weibo_ajax = {s:'',f:'',k:'',t:-1,ts:'',tf:''}
+var varietynga_weibo_ajax = {s:'',f:'',k:'',t:-1,ts:'',tf:'',lasttime:0}
 
 String.prototype.colorHex = function(){
         var that = this;
@@ -84,7 +84,21 @@ varietynga_weibo_ajax.tf = function(mode){
 			)
 		)
 		
-		varietynga_weibo_ajax.t = setTimeout(varietynga_weibo_ajax.ts,6000);
+		//varietynga_weibo_ajax.t = setTimeout(varietynga_weibo_ajax.ts,6000);
+		varietynga_weibo_ajax.t = setTimeout(function(){
+			var tid = /tid=(\d+)/.exec(varietynga_weibo_ajax.ts)[1]
+			__NUKE.doRequest({
+				u:'/nuke.php?__api=1&__act=get&__lib=get_topic_modify_time&tid='+tid+'&__output=1',
+				f:function(d){
+					//alert(d.data[0])
+					if (d.data[0] > varietynga_weibo_ajax.lasttime){
+						varietynga_weibo_ajax.lasttime = d.data[0]
+						eval(varietynga_weibo_ajax.ts)
+					}else{
+						varietynga_weibo_ajax.tf(2)
+					}
+				}
+			})},10000)
 	}else{
 		oo._.__add(
 			_$('/a').$0(
@@ -157,12 +171,13 @@ function varietynga_weibo_scroll(check,tfunc){
 }
 
 function varietynga_Initialization(){
-	nga_plug_addmsg("varietynga","百变NGA","修复折叠内容可收缩。");
+	nga_plug_addmsg("varietynga","百变NGA","1.修改即时加载判断是否有新回复的方式。\n2.增加划词搜索功能。");
 	
 	varietynga_setting.load();
 	varietynga_setting.data = varietynga_setting.data || {set:{tieba:true,weibo:true,img:true,kj:true,zd:true}};
 	varietynga_setting.data.set.kj = varietynga_setting.data.set.kj == null?true:varietynga_setting.data.set.kj
 	varietynga_setting.data.set.zd = varietynga_setting.data.set.zd == null?true:varietynga_setting.data.set.zd
+	varietynga_setting.data.set.search = varietynga_setting.data.set.search == null?true:varietynga_setting.data.set.search
 	
 	//将小工具集的设置加入导出数据中
 	nga_plug_setting("add","小工具设置","varietynga_setting");
@@ -177,7 +192,8 @@ function varietynga_Initialization(){
 	e.add("总体设置",'<input onclick="varietynga_setting.data.set.weibo=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.weibo)+'>启用帖子即时加载（腾讯微博风格）<br>\
 		<input onclick="varietynga_setting.data.set.img=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.img)+'>启用图片旋转功能<br>\
 		<input onclick="varietynga_setting.data.set.kj=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.kj)+'>启用右下角快捷菜单<br>\
-		<input onclick="varietynga_setting.data.set.zd=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.zd)+'>启用折叠内容可收缩');
+		<input onclick="varietynga_setting.data.set.zd=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.zd)+'>启用折叠内容可收缩<br>\
+		<input onclick="varietynga_setting.data.set.search=this.checked;varietynga_setting.save();" type="checkbox" '+c(varietynga_setting.data.set.search)+'>启用划词搜索');
 	e.add("界面设置",varietynga_setthtml());
 	var t = e.gethtml();
 	nga_plug_table_addTab("百变NGA",t);
@@ -211,6 +227,7 @@ function varietynga_Initialization(){
 	}else if(location.pathname == "/read.php" && document.URL.indexOf("page=e#a") < 0){
 		if (varietynga_setting.data.set.kj) varietynga_kj();
 		if (location.search.indexOf("pid=") >= 0) return;
+		if (varietynga_setting.data.set.search) varietynga_search()
 		if (varietynga_setting.data.set.weibo){
 			
 			try{
@@ -242,6 +259,13 @@ function varietynga_Initialization(){
 			if (maxpage == nowpage){
 				//varietynga_weibo_scroll(1,'new nga_plug_XMLHttp("'+pageurl + nowpage+'",varietynga_weibo,{url:"'+pageurl+'",p:'+nowpage+',n:1});')
 				varietynga_weibo_ajax.ts = 'new nga_plug_XMLHttp(\''+pageurl + nowpage+'\',varietynga_weibo,{url:\''+pageurl+'\',p:'+nowpage+',n:1})';
+				var tid = /tid=(\d+)/.exec(varietynga_weibo_ajax.ts)[1]
+				__NUKE.doRequest({
+					u:'/nuke.php?__api=1&__act=get&__lib=get_topic_modify_time&tid='+tid+'&__output=1',
+					f:function(d){
+						varietynga_weibo_ajax.lasttime = d.data[0]
+					}
+				})
 				varietynga_weibo_ajax.tf(2);
 			}else{
 				varietynga_weibo_scroll(1,'new nga_plug_XMLHttp("'+pageurl + (nowpage + 1)+'",varietynga_weibo,{url:"'+pageurl+'",p:'+(nowpage + 1)+',n:2});')
@@ -284,11 +308,23 @@ function varietynga_weibo(html,arg){
 	if (maxpage == arg.p) {                                                                //如果最大页==当前页则load后进入over模式
 		load(html,arg);
 		varietynga_weibo_ajax.ts = 'new nga_plug_XMLHttp(\''+arg.url + (arg.p)+'\',varietynga_weibo,{url:\''+arg.url+'\',p:'+(arg.p)+',n:'+(arg.n)+'})';
+		__NUKE.doRequest({
+			u:'/nuke.php?__api=1&__act=get&__lib=get_topic_modify_time&tid='+tid+'&__output=1',
+			f:function(d){
+				varietynga_weibo_ajax.lasttime = d.data[0]
+			}
+		})
 		varietynga_weibo_ajax.tf(2);
 		return;
 	}
 	if (/<title>提示信息<\/title>/.test(html)) {                                           //如果提示错误也进入over模式
 		varietynga_weibo_ajax.ts = 'new nga_plug_XMLHttp(\''+arg.url + (arg.p)+'\',varietynga_weibo,{url:\''+arg.url+'\',p:'+(arg.p)+',n:'+(arg.n)+'})';
+		__NUKE.doRequest({
+			u:'/nuke.php?__api=1&__act=get&__lib=get_topic_modify_time&tid='+tid+'&__output=1',
+			f:function(d){
+				varietynga_weibo_ajax.lasttime = d.data[0]
+			}
+		})
 		varietynga_weibo_ajax.tf(2);
 		return;
 	}
@@ -615,6 +651,102 @@ function varietynga_setCollapseButton(){
 			}
 		}
 	}
+}
+
+//划词搜索
+function varietynga_search(){
+	var w = $('selectTextHintWindow')
+	if(w) w.parentNode.removeChild(w)
+	w = _$('<div class="urltip urltip2" style="margin:0;height:16px;line-height:16px" id="selectTextHintWindow" onmouseup="commonui.cancelBubble(event)">\
+		<nobr><a href="javascript:void(0)" onclick="commonui.quoteTo.quote()" title="引用选中的文字" class="inlineBlock" style="background:url('+__IMG_STYLE+'/quoteto.png);width:16px;height:16px"></a>\
+		&nbsp; &nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.baidu()" title="百度一下" target="_blank" class="inlineBlock" style="background:url(http://ngaplugins.googlecode.com/svn/trunk/img/baidu.png);width:16px;height:16px"></a>\
+		&nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.google()" title="谷歌搜索" target="_blank" class="inlineBlock" style="background:url(http://ngaplugins.googlecode.com/svn/trunk/img/google.png);width:16px;height:16px"></a>\
+		&nbsp; &nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.sina()" title="分享到新浪微博" target="_blank" class="inlineBlock" style="background:url('+__IMG_STYLE+'/quoteto.png) 0px -16px;width:16px;height:16px"></a>\
+		&nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.qq()" title="分享到腾讯微博" target="_blank" class="inlineBlock" style="background:url('+__IMG_STYLE+'/quoteto.png) 0px -32px;width:16px;height:16px"></a>\
+		&nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.nete()" title="分享到网易微博" target="_blank" class="inlineBlock" style="background:url('+__IMG_STYLE+'/quoteto.png) 0px -48px;width:16px;height:16px"></a>\
+		</nobr></div>')
+	document.body.appendChild(w)
+	
+	commonui.quoteTo.onmouseup=function(e,l){
+			/*
+			if(this.hold){
+				this.hold=false
+				return
+			}
+			*/
+		var w = $('selectTextHintWindow')
+		if(w && w.style.display!='none')
+			w.style.display='none'
+
+		if(!commonui.postBtn.argCache || !commonui.postBtn.argCache[l])
+			return
+
+		var r = commonui.range.get()
+
+		if(!r || r.isCollapse())
+			return
+
+		this.currentSelectId = l
+		this.currentSelectRange = r
+
+		if(!w) {
+			w = _$('<div class="urltip urltip2" style="margin:0;height:16px;line-height:16px" id="selectTextHintWindow" onmouseup="commonui.cancelBubble(event)">\
+				<nobr><a href="javascript:void(0)" onclick="commonui.quoteTo.quote()" title="引用选中的文字" class="inlineBlock" style="background:url('+__IMG_STYLE+'/quoteto.png);width:16px;height:16px"></a>\
+				&nbsp; &nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.baidu()" title="百度一下" target="_blank" class="inlineBlock" style="background:url(http://ngaplugins.googlecode.com/svn/trunk/img/baidu.png);width:16px;height:16px"></a>\
+				&nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.google()" title="谷歌搜索" target="_blank" class="inlineBlock" style="background:url(http://ngaplugins.googlecode.com/svn/trunk/img/google.png);width:16px;height:16px"></a>\
+				&nbsp; &nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.sina()" title="分享到新浪微博" target="_blank" class="inlineBlock" style="background:url('+__IMG_STYLE+'/quoteto.png) 0px -16px;width:16px;height:16px"></a>\
+				&nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.qq()" title="分享到腾讯微博" target="_blank" class="inlineBlock" style="background:url('+__IMG_STYLE+'/quoteto.png) 0px -32px;width:16px;height:16px"></a>\
+				&nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.nete()" title="分享到网易微博" target="_blank" class="inlineBlock" style="background:url('+__IMG_STYLE+'/quoteto.png) 0px -48px;width:16px;height:16px"></a>\
+				</nobr></div>')
+			document.body.appendChild(w)
+		}
+
+		if(!e)
+			e = window.event
+
+		e.__quoteToIgnoreThisEvent = e.keyCode = 255//hideWindow中忽略此事件(ie6event不能添加自定义属性)(取消事件可能引起浏览器鼠标手势插件失灵)
+
+		var e = __NUKE.position.get(e)
+		var rp = r.getBoundingClientRect()
+
+		w.style.left = '0px'
+		w.style.top = '0px'
+		w.style.display='block'
+
+		var t=0
+		if(Math.abs(e.y-rp.top)>=Math.abs(e.y-rp.bottom))
+			t=rp.bottom+3
+		else
+			t=rp.top-w.offsetHeight-8
+
+		w.style.left = Math.floor(e.px)+'px'
+		w.style.top = Math.floor(t)+e.yf+'px'
+
+	}//fe
+
+
+	commonui.quoteTo.baidu = function(x){
+		if(!x)this.procsearchText()
+		var p = {
+			word:this.searchData
+			}
+		commonui.post('http://www.baidu.com/s',p,'_blank','get','UTF-8')
+		}
+
+
+	commonui.quoteTo.google = function(x){
+		if(!x)this.procsearchText()
+		var p = {
+			q:this.searchData
+			}
+		commonui.post('http://www.google.com.hk/search',p,'_blank','get','UTF-8')
+		}
+		
+		
+	commonui.quoteTo.procsearchText=function(){
+	var r=this.currentSelectRange,  n = r.getNodes()
+	this.searchData = (n.innerText ? n.innerText : n.textContent).replace(/(?:Reply to )?\[ (?:Reply|Topic) \] Post by .+? \(\d+-\d+-\d+ \d+:\d+\):?/i,'').replace(/\s+/g,' ')
+	}//fe
 }
 
 //生成CSS
