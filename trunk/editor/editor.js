@@ -12,7 +12,15 @@ var nga_edit_mojo_check = new nga_plug_local_data("nga_edit_mojo_check");
 var nga_edit_custom_mojo = new nga_plug_local_data("nga_edit_custom_mojo");
 var nga_edit_quick_mojo = new nga_plug_local_data("nga_edit_quick_mojo");
 
+var nga_edit_textarea = document.getElementsByTagName('textarea');
+if(nga_edit_textarea.length==1){
+	nga_edit_textarea = nga_edit_textarea[0];
+}else{
+	nga_edit_textarea = null;
+}
+
 function nga_edit_Initialization(){
+	nga_plug_addmsg("nga_plug","NGA UBB编辑器插件","修复编辑框不可用");
 	nga_plug_addmsg("nga_edit","NGA UBB编辑器插件","添加测试功能：所见即所得编辑，原“编辑”标签修改为“代码”标签，原“编辑”标签为所见即所得编辑模式。\n提示：1.部分代码暂不支持所见即所得模式（如code代码）这种类型的代码在所见即所得模式下依然显示源代码。\
 	\n2.如在所见即所得编辑模式下编辑后造成代码错乱（部分换行消失不算）请在UBB（代码）模式下撤销至之前的内容即可，并请将之前的内容以code代码包含后发至交流贴以便修复BUG。");
 
@@ -40,22 +48,23 @@ function nga_edit_Initialization(){
 	var txtisfocus = false;
 	if (document.activeElement.id == "atc_content") txtisfocus = true;
 	var nga_edit_pathname = location.pathname;
-	if(nga_edit_pathname == '/post.php'){
-		var t_td = document.getElementById('atc_content').parentNode;
-		try{document.getElementById("postform").appendChild(document.getElementById("atc_content"));}catch(e){}
+	/*if(nga_edit_pathname == '/post.php'){
+		var t_td = nga_edit_textarea.parentNode;
+		try{document.getElementsByTagName("body")[0].appendChild(nga_edit_textarea);}catch(e){}
 		t_td.innerHTML = nga_edit_gettabhtml();
-		try{document.getElementById("nga_edit_content").appendChild(document.getElementById("atc_content"));}catch(e){}
-		document.getElementById("atc_content").style.width="99%";
+		try{document.getElementById("nga_edit_content").appendChild(nga_edit_textarea);}catch(e){}
+		nga_edit_textarea.style.width="99%";
 		document.getElementById("post_preview").style.display="inline";
 		document.getElementById("post_preview").style.padding="0";
-	}else if(nga_edit_pathname == '/read.php' || nga_edit_pathname == '/thread.php'){
-		if (document.getElementById("atc_content")){
+	}else */
+	if(nga_edit_pathname == '/read.php' || nga_edit_pathname == '/thread.php' | nga_edit_pathname == '/post.php'){
+		if (nga_edit_textarea){
 			var nga_edit_divEl = document.createElement("div");
 			nga_edit_divEl.innerHTML = nga_edit_gettabhtml();
 			try{
-				document.getElementById("atc_content").parentNode.insertBefore(nga_edit_divEl,document.getElementById("atc_content"));
-				document.getElementById("nga_edit_content").appendChild(document.getElementById("atc_content"));
-				document.getElementById("atc_content").style.width="99%";
+				nga_edit_textarea.parentNode.insertBefore(nga_edit_divEl,nga_edit_textarea);
+				document.getElementById("nga_edit_content").appendChild(nga_edit_textarea);
+				nga_edit_textarea.style.width="99%";
 				document.getElementById("post_preview").style.display="inline";
 				document.getElementById("post_preview").style.padding="0";
 			}catch(e){};
@@ -65,27 +74,27 @@ function nga_edit_Initialization(){
 		try{
 			document.getElementById("nga_edit_content").parentNode.parentNode.parentNode.getElementsByTagName("li")[3].onclick=function(){
 				nga_plug_tab_setTab(this,2);
-				postfunc.preview = document.getElementById("post_preview");
-				postfunc.preview.innerHTML = postfunc.content.value.replace(/\n/g,'<br>');
-				ubbcode.bbsCode({c:postfunc.preview,tId:Math.floor(Math.random()*10000),pId:Math.floor(Math.random()*10000),authorId:__CURRENT_UID,rvrc:__GP['rvrc'],isLesser:__GP['lesser']});
+				nga_plug_post_preview = document.getElementById("post_preview");
+				nga_plug_post_preview.innerHTML = nga_edit_textarea.value.replace(/\n/g,'<br>');
+				ubbcode.bbsCode({c:nga_plug_post_preview,tId:Math.floor(Math.random()*10000),pId:Math.floor(Math.random()*10000),authorId:__CURRENT_UID,rvrc:__GP['rvrc'],isLesser:__GP['lesser']});
 			};
 			document.getElementById("nga_edit_content").parentNode.parentNode.parentNode.getElementsByTagName("li")[2].onclick=function(){
 				nga_plug_tab_setTab(this,1);
-				postfunc.preview = document.getElementById("post_edit");
-				postfunc.preview.innerHTML = postfunc.content.value.replace(/\n/g,'<br>');
-				postfunc.preview.innerHTML = nga_edit_ubb2ubb(postfunc.preview.innerHTML,1);  //将不转换的UBB代码加感叹号
-				ubbcode.bbsCode({c:postfunc.preview,tId:Math.floor(Math.random()*10000),pId:Math.floor(Math.random()*10000),authorId:__CURRENT_UID,rvrc:__GP['rvrc'],isLesser:__GP['lesser']});
-				postfunc.preview.innerHTML = nga_edit_ubb2ubb(postfunc.preview.innerHTML,2);  //将没有转换的UBB代码的感叹号取消
+				nga_plug_post_preview = document.getElementById("post_edit");
+				nga_plug_post_preview.innerHTML = nga_edit_textarea.value.replace(/\n/g,'<br>');
+				nga_plug_post_preview.innerHTML = nga_edit_ubb2ubb(nga_plug_post_preview.innerHTML,1);  //将不转换的UBB代码加感叹号
+				ubbcode.bbsCode({c:nga_plug_post_preview,tId:Math.floor(Math.random()*10000),pId:Math.floor(Math.random()*10000),authorId:__CURRENT_UID,rvrc:__GP['rvrc'],isLesser:__GP['lesser']});
+				nga_plug_post_preview.innerHTML = nga_edit_ubb2ubb(nga_plug_post_preview.innerHTML,2);  //将没有转换的UBB代码的感叹号取消
 			};
 			document.getElementById("post_edit").onblur=function(){
 				//alert(this.id);  //可编辑DIV失去焦点时触发，此处应执行html到ubb代码的转换
 				nga_edit_settmpshot()
-				document.getElementById("atc_content").value = nga_edit_html2ubb(this.innerHTML);
+				nga_edit_textarea.value = nga_edit_html2ubb(this.innerHTML);
 				nga_edit_settmpshot()
 				return true;
 			}
-			document.getElementById("atc_content").onkeyup = function(event){nga_edit_setshot('up');postfunc.inputchar(event,this);}
-			document.getElementById("atc_content").onkeydown = function(e){
+			/*nga_edit_textarea.onkeyup = function(event){nga_edit_setshot('up');postfunc.inputchar(event,this);}
+			nga_edit_textarea.onkeydown = function(e){
 				nga_edit_setshot('down');
 				var e = e || window.event;
 				var keyCode = e.which ? e.which : e.keyCode;
@@ -93,8 +102,8 @@ function nga_edit_Initialization(){
 					postfunc.post_v2();
 				}
 				postfunc.quickpost(e);
-			}
-			try{if (txtisfocus) document.getElementById('atc_content').focus();}catch(e){};
+			}*/
+			try{if (txtisfocus) nga_edit_textarea.focus();}catch(e){};
 		}catch(e){};
 	}
 	
@@ -344,14 +353,14 @@ function nga_edit_setshot(act){
 }
 function nga_edit_settmpshot(){	//保存数据
 	if (nga_edit_tmpshot.length - nga_edit_tmpshot_i < 2){
-		if(nga_edit_tmpshot[nga_edit_tmpshot_i] != document.getElementById('atc_content').value && document.getElementById('atc_content').value != ''){
-			nga_edit_tmpshot.push(document.getElementById('atc_content').value);
+		if(nga_edit_tmpshot[nga_edit_tmpshot_i] != nga_edit_textarea.value && nga_edit_textarea.value != ''){
+			nga_edit_tmpshot.push(nga_edit_textarea.value);
 			nga_edit_tmpshot_i = nga_edit_tmpshot.length - 1;
 			if (nga_edit_tmpshot.length > 1) nga_edit_icon_setEnabled(document.getElementById("nga_edit_icon_chexiao"),true);
 		}
 	}else{
-		if(nga_edit_tmpshot[nga_edit_tmpshot_i] != document.getElementById('atc_content').value && document.getElementById('atc_content').value != ''){
-			nga_edit_tmpshot[nga_edit_tmpshot_i+1] = document.getElementById('atc_content').value;
+		if(nga_edit_tmpshot[nga_edit_tmpshot_i] != nga_edit_textarea.value && nga_edit_textarea.value != ''){
+			nga_edit_tmpshot[nga_edit_tmpshot_i+1] = nga_edit_textarea.value;
 			nga_edit_tmpshot.length = nga_edit_tmpshot_i + 2;
 			nga_edit_tmpshot_i = nga_edit_tmpshot.length - 1;
 			nga_edit_icon_setEnabled(document.getElementById("nga_edit_icon_huifu"),false);
@@ -514,7 +523,7 @@ function nga_edit_gettabhtml(){
 	
 	t_html = x.gethtml();
 	
-	t_html += '<input type="checkbox" name="hidden">隐藏内容 仅版主可见 <input type="checkbox" name="self_reply">只有作者和版主可以回复<br>';
+	//t_html += '<input type="checkbox" name="hidden">隐藏内容 仅版主可见 <input type="checkbox" name="self_reply">只有作者和版主可以回复<br>';
 	return t_html;
 }
 
@@ -553,7 +562,7 @@ function nga_edit_addTad(textarea,tag,value){
 }
 
 function nga_edit_icon_show(obj,act,value){
-	var textarea = document.getElementById('atc_content');
+	var textarea = nga_edit_textarea;
 	if (act == "size" || act == "font" || act == "color"){
 		nga_edit_addTad(textarea,act,value);
 	}else if (act =="armory"){
@@ -586,11 +595,11 @@ function nga_edit_icon_show(obj,act,value){
 }
 
 function nga_edit_icon_click(obj,act,o){
-	var textarea = document.getElementById('atc_content');
+	var textarea = nga_edit_textarea;
 	if (act == 'chexiao'){ //撤销
 		if (nga_edit_icon_getEnabled(document.getElementById("nga_edit_icon_chexiao"))){
 			nga_edit_tmpshot_i--;
-			document.getElementById('atc_content').value = nga_edit_tmpshot[nga_edit_tmpshot_i];
+			nga_edit_textarea.value = nga_edit_tmpshot[nga_edit_tmpshot_i];
 			nga_edit_icon_setEnabled(document.getElementById("nga_edit_icon_huifu"),true);
 			if (nga_edit_tmpshot_i == 0){
 				nga_edit_icon_setEnabled(document.getElementById("nga_edit_icon_chexiao"),false);
@@ -599,7 +608,7 @@ function nga_edit_icon_click(obj,act,o){
 	}else if(act == 'huifu'){  //重做
 		if (nga_edit_icon_getEnabled(document.getElementById("nga_edit_icon_huifu"))){
 			nga_edit_tmpshot_i++;
-			document.getElementById('atc_content').value = nga_edit_tmpshot[nga_edit_tmpshot_i];
+			nga_edit_textarea.value = nga_edit_tmpshot[nga_edit_tmpshot_i];
 			nga_edit_icon_setEnabled(document.getElementById("nga_edit_icon_chexiao"),true);
 			if (nga_edit_tmpshot_i == nga_edit_tmpshot.length - 1){
 				nga_edit_icon_setEnabled(document.getElementById("nga_edit_icon_huifu"),false);
@@ -796,7 +805,7 @@ function nga_edit_icon_click(obj,act,o){
 		}
 	}
 	if (act != 'huifu' && act != 'chexiao') nga_edit_settmpshot();
-	try{document.getElementById('atc_content').focus();}catch(e){};
+	try{nga_edit_textarea.focus();}catch(e){};
 }
 
 //表情模块  创建选择表情窗口、预览、点击
@@ -889,9 +898,9 @@ function nga_edit_mojo(act,obj,e,autoor,id){
 		}
 		if (obj.tagName.toLowerCase() == "div") obj = obj.getElementsByTagName("img")[0]
 		if (obj.src != obj.alt){
-			postfunc.addsmile('['+obj.alt+']');
+			postfunc.addText('['+obj.alt+']');
 		}else{
-			postfunc.addsmile('[img]'+obj.src+'[/img]');
+			postfunc.addText('[img]'+obj.src+'[/img]');
 		}
 		if (!e.ctrlKey && autoor != "quick") nga_edit_mojo("create");
 		var isquickmojo = false;
