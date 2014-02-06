@@ -93,9 +93,16 @@ function nga_edit_Initialization(){
 				nga_edit_settmpshot()
 				return true;
 			}
-			postfunc.o_content=postfunc.o_content==null?nga_edit_textarea:postfunc.o_content;
-			nga_plug_addEvent(postfunc.o_content,'keyup',nga_plug_enter_keyup);
-			nga_plug_addEvent(postfunc.o_content,'keydown',nga_plug_enter_keydown);
+			/*nga_edit_textarea.onkeyup = function(event){nga_edit_setshot('up');postfunc.inputchar(event,this);}
+			nga_edit_textarea.onkeydown = function(e){
+				nga_edit_setshot('down');
+				var e = e || window.event;
+				var keyCode = e.which ? e.which : e.keyCode;
+				if (e.altKey && keyCode == 83){
+					postfunc.post_v2();
+				}
+				postfunc.quickpost(e);
+			}*/
 			try{if (txtisfocus) nga_edit_textarea.focus();}catch(e){};
 		}catch(e){};
 	}
@@ -121,45 +128,6 @@ function nga_edit_Initialization(){
 	var t = x.gethtml();
 	nga_plug_table_addTab("表情设置",t);
 	
-}
-
-function nga_plug_enter_keyup(){
-	nga_edit_setshot('up');
-}
-function nga_plug_enter_keydown(e){
-	nga_edit_setshot('down');
-	var e = e || window.event;
-	var keyCode = e.which ? e.which : e.keyCode;
-	if (!e.altKey || keyCode != 83){
-		return;
-	}
-	var nagplug_enter_button = document.getElementsByTagName('span');
-	var nagplug_enter_button_link = [];
-	for(var i=0;i<nagplug_enter_button.length;i++){
-		if(nagplug_enter_button[i].innerHTML.indexOf('Ctrl+Enter') > 0 && nagplug_enter_button[i].parentNode.tagName=='A'){
-			nagplug_enter_button_link.push(nagplug_enter_button[i].parentNode);
-		}
-	}
-	if(nagplug_enter_button_link.length==0){
-		nagplug_enter_button = document.getElementsByTagName('a');
-		for(var i=0;i<nagplug_enter_button.length;i++){
-			if(nagplug_enter_button[i].innerHTML=='发表回复(Ctrl+Enter)'){
-				nagplug_enter_button_link.push(nagplug_enter_button[i]);
-			}
-		}
-	}
-	if(nagplug_enter_button_link.length==1){
-		nagplug_enter_button_link=nagplug_enter_button_link[0];
-	}
-	else if(nagplug_enter_button_link.length>1){
-		nagplug_enter_button_link=nagplug_enter_button_link[nagplug_enter_button_link.length-1];
-	}
-	else{
-		nagplug_enter_button_link=null;
-	}
-	if(nagplug_enter_button_link){
-		nagplug_enter_button_link.click();
-	}
 }
 
 //打开编辑框时给UBB代码做转换以防止不支持编辑的UBB代码转换为HTML代码
