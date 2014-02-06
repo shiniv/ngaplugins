@@ -19,38 +19,6 @@ function nga_plug_HideDomOfClick(id){
 		document.addEventListener("click", function(){DomEl.style.display = "none";}, false);
 	}
 }
-/*********************对象添加事件*******************/
-function nga_plug_addEvent(obj,type,fun){
-	obj=nga_plug_getobj(obj);
-	if(obj.addEventListener){
-		obj.addEventListener(type,fun);
-		return true;
-	}else if(obj.attachEvent){
-		return obj.attachEvent("on"+type,fun);
-	}else{
-		return false;
-	};
-};
-/*********************对象删除事件*******************/
-function nga_plug_delEvent(obj,type,fun){
-	obj=nga_plug_getobj(obj);
-	if(obj.addEventListener){
-		obj.removeEventListener(type,fun);
-		return true;
-	}else if(obj.attachEvent){
-		obj.detachEvent("on"+type,fun);
-		return true;
-	}else{
-		return false;
-	};
-};
-
-function nga_plug_getobj(obj){
-	if(typeof obj=="object"){
-		return obj;
-	};
-	return document.getElementById(obj);
-};
 //  全局函数：获取元素相对于页面的绝对坐标
 function nga_plug_elementLeft(e){
 	try{
