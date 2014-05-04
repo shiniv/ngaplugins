@@ -724,7 +724,8 @@ function nga_newmsg(mode,check){
 		for (var i=0;i<nga_plug_msg.data.length;i++){
 			for (var k=0;k<nga_plug_msg.data[i].msg.length;k++){
 				if (!nga_plug_msg.data[i].msg[k].read){
-					newmsg = true;                 //如果模式为new且有没有标记为已读的则判定为有新消息
+					//newmsg = true;                 //如果模式为new且有没有标记为已读的则判定为有新消息
+					//注释该行以后将不会出现新消息
 				}
 			}
 		}
