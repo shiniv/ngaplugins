@@ -43,9 +43,9 @@ function nga_edit_Initialization(){
 	}];
 	nga_plug_mojo.unshift({autoor:"NGA",data:m})
 	
-	var txtisfocus = false;
-	if (document.activeElement.id == "atc_content") txtisfocus = true;
 	var nga_edit_pathname = location.pathname;
+	var txtisfocus = false;
+	if (nga_edit_pathname == '/post.php') txtisfocus = true;
 	/*if(nga_edit_pathname == '/post.php'){
 		var t_td = nga_edit_textarea.parentNode;
 		try{document.getElementsByTagName("body")[0].appendChild(nga_edit_textarea);}catch(e){}
