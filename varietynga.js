@@ -704,6 +704,19 @@ function varietynga_search(){
 		w.style.left = Math.floor(e.px)+'px'
 		w.style.top = Math.floor(t)+e.yf+20+'px'
 	}
+	
+	var old_h = commonui.quoteTo.hideWindow;
+	commonui.quoteTo.hideWindow = function (e){//隐藏弹出窗 绑定至window mouseup
+		if(!e)
+			e = window.event
+		if(e.__quoteToIgnoreThisEvent || e.keyCode==255)//弹出动作时忽略事件
+			return;
+		//console.log(4)
+		old_h(e);
+		var w = $('selectTextHintWindow_lintx')
+		if(w && w.style.display!='none')
+			w.style.display='none'
+	} 
 
 	commonui.quoteTo.baidu = function(x){
 		if(!x)this.procsearchText()
