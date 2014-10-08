@@ -657,26 +657,10 @@ function varietynga_setCollapseButton(){
 
 //划词搜索
 function varietynga_search(){
-	var w = $('selectTextHintWindow')
-	if(w) w.parentNode.removeChild(w)
-	w = _$('<div class="urltip urltip2" style="margin:0;height:16px;line-height:16px" id="selectTextHintWindow" onmouseup="commonui.cancelBubble(event)">\
-		<nobr><a href="javascript:void(0)" onclick="commonui.quoteTo.quote()" title="引用选中的文字" class="inlineBlock" style="background:url('+__IMG_STYLE+'/quoteto.png);width:16px;height:16px"></a>\
-		&nbsp; &nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.baidu()" title="百度一下" target="_blank" class="inlineBlock" style="background:url(http://ngaplugins.googlecode.com/svn/trunk/img/baidu.png);width:16px;height:16px"></a>\
-		&nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.google()" title="谷歌搜索" target="_blank" class="inlineBlock" style="background:url(http://ngaplugins.googlecode.com/svn/trunk/img/google.png);width:16px;height:16px"></a>\
-		&nbsp; &nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.sina()" title="分享到新浪微博" target="_blank" class="inlineBlock" style="background:url('+__IMG_STYLE+'/quoteto.png) 0px -16px;width:16px;height:16px"></a>\
-		&nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.qq()" title="分享到腾讯微博" target="_blank" class="inlineBlock" style="background:url('+__IMG_STYLE+'/quoteto.png) 0px -32px;width:16px;height:16px"></a>\
-		&nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.nete()" title="分享到网易微博" target="_blank" class="inlineBlock" style="background:url('+__IMG_STYLE+'/quoteto.png) 0px -48px;width:16px;height:16px"></a>\
-		</nobr></div>')
-	document.body.appendChild(w)
-	
-	commonui.quoteTo.onmouseup=function(e,l){
-			/*
-			if(this.hold){
-				this.hold=false
-				return
-			}
-			*/
-		var w = $('selectTextHintWindow')
+	var old_m = commonui.quoteTo.onmouseup;
+	commonui.quoteTo.onmouseup = function(e,l){
+	old_m(e,l);
+		var w = $('selectTextHintWindow_lintx')
 		if(w && w.style.display!='none')
 			w.style.display='none'
 
@@ -692,13 +676,9 @@ function varietynga_search(){
 		this.currentSelectRange = r
 
 		if(!w) {
-			w = _$('<div class="urltip urltip2" style="margin:0;height:16px;line-height:16px" id="selectTextHintWindow" onmouseup="commonui.cancelBubble(event)">\
-				<nobr><a href="javascript:void(0)" onclick="commonui.quoteTo.quote()" title="引用选中的文字" class="inlineBlock" style="background:url('+__IMG_STYLE+'/quoteto.png);width:16px;height:16px"></a>\
-				&nbsp; &nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.baidu()" title="百度一下" target="_blank" class="inlineBlock" style="background:url(http://ngaplugins.googlecode.com/svn/trunk/img/baidu.png);width:16px;height:16px"></a>\
+			w = _$('<div class="urltip urltip2" style="margin:0;height:16px;line-height:16px" id="selectTextHintWindow_lintx" onmouseup="commonui.cancelBubble(event)">\
+				<nobr><a href="javascript:void(0)" onclick="commonui.quoteTo.baidu()" title="百度一下" target="_blank" class="inlineBlock" style="background:url(http://ngaplugins.googlecode.com/svn/trunk/img/baidu.png);width:16px;height:16px"></a>\
 				&nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.google()" title="谷歌搜索" target="_blank" class="inlineBlock" style="background:url(http://ngaplugins.googlecode.com/svn/trunk/img/google.png);width:16px;height:16px"></a>\
-				&nbsp; &nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.sina()" title="分享到新浪微博" target="_blank" class="inlineBlock" style="background:url('+__IMG_STYLE+'/quoteto.png) 0px -16px;width:16px;height:16px"></a>\
-				&nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.qq()" title="分享到腾讯微博" target="_blank" class="inlineBlock" style="background:url('+__IMG_STYLE+'/quoteto.png) 0px -32px;width:16px;height:16px"></a>\
-				&nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.nete()" title="分享到网易微博" target="_blank" class="inlineBlock" style="background:url('+__IMG_STYLE+'/quoteto.png) 0px -48px;width:16px;height:16px"></a>\
 				</nobr></div>')
 			document.body.appendChild(w)
 		}
@@ -722,10 +702,8 @@ function varietynga_search(){
 			t=rp.top-w.offsetHeight-8
 
 		w.style.left = Math.floor(e.px)+'px'
-		w.style.top = Math.floor(t)+e.yf+'px'
-
-	}//fe
-
+		w.style.top = Math.floor(t)+e.yf+20+'px'
+	}
 
 	commonui.quoteTo.baidu = function(x){
 		if(!x)this.procsearchText()
