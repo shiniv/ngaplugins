@@ -950,6 +950,12 @@ function varietynga_img(){
 				<div onclick='event.cancelBubble = true;varietynga_imgclick(this.parentNode.parentNode,\"qrcode\");return false;' title='二维码' \
 				style='display: inline-block; background-image: url(http://ngaplugins.googlecode.com/svn/trunk/img/qrcode.png); \
 				height: 16px; width: 16px; border:1px solid #777777;background-position: initial initial; background-repeat: initial initial;'></div>\
+				<div onclick='event.cancelBubble = true;varietynga_imgclick(this.parentNode.parentNode,\"s_b\");return false;' title='百度搜图' \
+				style='display: inline-block; background-image: url(http://ngaplugins.googlecode.com/svn/trunk/img/baidu.png); \
+				height: 16px; width: 16px; border:1px solid #777777;background-position: initial initial; background-repeat: initial initial;'></div>\
+				<div onclick='event.cancelBubble = true;varietynga_imgclick(this.parentNode.parentNode,\"s_g\");return false;' title='谷歌搜图' \
+				style='display: inline-block; background-image: url(http://ngaplugins.googlecode.com/svn/trunk/img/google.png); \
+				height: 16px; width: 16px; border:1px solid #777777;background-position: initial initial; background-repeat: initial initial;'></div>\
 				</div>";
 			timg[i].parentNode.insertBefore(ts,timg[i]);
 			//timg[i].className = timg[i].className.replace("imgmaxwidth","");
@@ -980,7 +986,7 @@ function varietynga_img(){
 	
 	function checkimg(img){
 		if(img.parentNode.className=="varietyngas") return false
-		if(img.parentNode.className=="posterinfo") return false
+		//if(img.parentNode.className=="posterinfo") return false
 		if(img.parentNode.getAttribute("name")=="portrait") return false
 		if(img.parentNode.getAttribute("name")=="medal") return false
 		if(img.parentNode.parentNode.getAttribute("name")=="money") return false
@@ -1016,6 +1022,21 @@ function varietynga_imgclick(o,p){
 		qrcode._.addContent(q);
 		qrcode._.show();
 		return;
+	}else if(p=='s_b'){
+		var p = {
+			rt:0,
+			rn:10,
+			ct:1,
+			tn:'baiduimage',
+			objurl:escape(img.src)
+		}
+		commonui.post('http://stu.baidu.com/i',p,'_blank','get','UTF-8')
+		
+	}else if(p=='s_g'){
+		var p = {
+			image_url:escape(img.src)
+		}
+		commonui.post('http://www.google.com/searchbyimage',p,'_blank','get','UTF-8')
 	}
 	img.setAttribute('step',n);
 	if(window.attachEvent) {
