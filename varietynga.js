@@ -679,6 +679,7 @@ function varietynga_search(){
 			w = _$('<div class="urltip urltip2" style="margin:0;height:16px;line-height:16px" id="selectTextHintWindow_lintx" onmouseup="commonui.cancelBubble(event)">\
 				<nobr><a href="javascript:void(0)" onclick="commonui.quoteTo.baidu()" title="百度一下" target="_blank" class="inlineBlock" style="background:url(http://ngaplugins.googlecode.com/svn/trunk/img/baidu.png);width:16px;height:16px"></a>\
 				&nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.google()" title="谷歌搜索" target="_blank" class="inlineBlock" style="background:url(http://ngaplugins.googlecode.com/svn/trunk/img/google.png);width:16px;height:16px"></a>\
+				&nbsp;<a href="javascript:void(0)" onclick="commonui.quoteTo.qrcode()" title="生成二维码" target="_blank" class="inlineBlock" style="background:url(http://ngaplugins.googlecode.com/svn/trunk/img/qrcode.png);width:16px;height:16px"></a>\
 				</nobr></div>')
 			document.body.appendChild(w)
 		}
@@ -702,7 +703,7 @@ function varietynga_search(){
 			t=rp.top-w.offsetHeight-8
 
 		w.style.left = Math.floor(e.px)+'px'
-		w.style.top = Math.floor(t)+e.yf+20+'px'
+		w.style.top = Math.floor(t)+e.yf+19+'px'
 	}
 	
 	var old_h = commonui.quoteTo.hideWindow;
@@ -733,6 +734,22 @@ function varietynga_search(){
 			q:this.searchData
 			}
 		commonui.post('http://www.google.com.hk/search',p,'_blank','get','UTF-8')
+		}
+		
+	commonui.quoteTo.qrcode = function(x){
+		if(!x)this.procsearchText()
+		var q = window._$('/img').$0('src','about:blank',
+			'style',{display:'none'},
+			'alt',this.searchData,
+			'onerror', function(){
+				window.commonui.QRCode.loadDataUrl(this,this.alt,function(){this.style.display=''})
+				}
+			)
+		var qrcode = new commonui.createCommmonWindow();
+		qrcode._.addContent(null);
+		qrcode._.addTitle('二维码-LinTx');	
+		qrcode._.addContent(q);
+		qrcode._.show();
 		}
 		
 		
