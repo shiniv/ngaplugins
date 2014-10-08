@@ -947,6 +947,9 @@ function varietynga_img(){
 				<div onclick='event.cancelBubble = true;varietynga_imgclick(this.parentNode.parentNode,\"r\");return false;' title='右转' \
 				style='display: inline-block; background-image: url(http://ngaplugins.googlecode.com/svn/trunk/img/right.gif); \
 				height: 16px; width: 16px; border:1px solid #777777;background-position: initial initial; background-repeat: initial initial;'></div>\
+				<div onclick='event.cancelBubble = true;varietynga_imgclick(this.parentNode.parentNode,\"qrcode\");return false;' title='二维码' \
+				style='display: inline-block; background-image: url(http://ngaplugins.googlecode.com/svn/trunk/img/qrcode.png); \
+				height: 16px; width: 16px; border:1px solid #777777;background-position: initial initial; background-repeat: initial initial;'></div>\
 				</div>";
 			timg[i].parentNode.insertBefore(ts,timg[i]);
 			//timg[i].className = timg[i].className.replace("imgmaxwidth","");
@@ -999,6 +1002,20 @@ function varietynga_imgclick(o,p){
 		(n==3)? n=0:n++;
 	}else if(p=='l'){
 		(n==0)? n=3:n--;
+	}else if(p=='qrcode'){
+		var q = window._$('/img').$0('src','about:blank',
+			'style',{display:'none'},
+			'alt',img.src,
+			'onerror', function(){
+				window.commonui.QRCode.loadDataUrl(this,this.alt,function(){this.style.display=''})
+				}
+			)
+		var qrcode = new commonui.createCommmonWindow();
+		qrcode._.addContent(null);
+		qrcode._.addTitle('二维码-LinTx');	
+		qrcode._.addContent(q);
+		qrcode._.show();
+		return;
 	}
 	img.setAttribute('step',n);
 	if(window.attachEvent) {
